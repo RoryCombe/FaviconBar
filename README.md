@@ -1,11 +1,18 @@
 # FaviconBar
 A favicon based favourites bar for Safari
 
-![](screenshot.png)
+![](img/screenshot.png)
 
-##Instructions
+##Installation
 
-Install the extension and in the extension's settings (Safari > Preferences > Extensions > Favicon Bar) insert a list of links separated with semi-colons (;)
+- Download the installation file: [FaviconBar.safariextz](https://github.com/umfana/FaviconBar/raw/master/FaviconBar.safariextz)
+- Double-click the downloaded file and select "Install"
+
+![](img/install.png)
+
+##Configuration
+
+In the extension's settings (Safari > Preferences > Extensions > Favicon Bar) insert a list of links separated with semi-colons (;)
 
 For example:
 
