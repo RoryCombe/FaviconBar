@@ -1,0 +1,48 @@
+html,
+body {
+    height: 100%;
+    background-color: #fff;
+}
+
+body {
+    color: #333;
+    text-align: center;
+    text-shadow: none; /*0 1px 3px rgba(0,0,0,.5);*/
+}
+
+.container {
+    width: auto;
+    max-width: 900px;
+    padding: 60px 15px;
+}
+
+@media (min-width: 992px) {
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 1000px;
+  }
+}
+
+/*.btn-default, .btn-default:hover, .btn-default:focus {
+    color: #fff;
+    text-shadow: none;
+    background-color: #7EC0EE;
+    border: 1px solid #fff;
+}*/
+
+/*.normal {
+	text-align: left;
+	color: #333;
+	text-shadow: none;
+}*/
+
+.install {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.config {
+    max-width: 300px;
+    margin: 0 auto;
+}
