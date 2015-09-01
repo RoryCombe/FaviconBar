@@ -32,6 +32,15 @@
 		ga('send', 'pageview');
 		ga('set', 'anonymizeIp', true);
 
+		var downloadButton = document.getElementById('downloadButton');
+		var downloadLink = document.getElementById('downloadLink');
+		addListener(downloadButton, 'click', function() {
+		  ga('send', 'event', 'button', 'click', 'Download');
+		});
+		addListener(downloadLink, 'click', function() {
+		  ga('send', 'event', 'button', 'click', 'Download');
+		});
+
 		</script>
 	</head>
 
@@ -51,10 +60,9 @@
 				<h1 class="cover-heading">FaviconBar for Safari</h1>
 				<p class="lead">A favicon based favourites bar for Safari</p>
 				<p class="lead">
-					<a href="https://github.com/umfana/FaviconBar/raw/master/FaviconBar.safariextz" 
+					<a id="downloadButton" href="https://github.com/umfana/FaviconBar/raw/master/FaviconBar.safariextz" 
 						class="btn btn-lg btn-info" 
-						style="width:140px;"
-						onclick="ga('send', 'event', 'button', 'click', 'Download');">Download</a>
+						style="width:140px;">Download</a>
 					<!-- <a href="https://github.com/umfana/FaviconBar/raw/master/FaviconBar.safariextz" class="btn btn-lg btn-success" style="width:140px;">Donate</a> -->
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 						<input type="hidden" name="cmd" value="_s-xclick">
@@ -72,7 +80,7 @@
 							<h2>Installation</h2>
 							<p>
 								<ul style="padding-left: 15px;">
-									<li>Download the installation file: <a href="https://github.com/umfana/FaviconBar/raw/master/FaviconBar.safariextz" onclick="ga('send', 'event', 'button', 'click', 'Download');">FaviconBar.safariextz</a></li>
+									<li>Download the installation file: <a id="downloadLink" href="https://github.com/umfana/FaviconBar/raw/master/FaviconBar.safariextz">FaviconBar.safariextz</a></li>
 									<li>Double-click the downloaded file and select "Install"</li>
 								</ul>
 							</p>
