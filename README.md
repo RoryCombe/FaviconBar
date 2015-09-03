@@ -32,3 +32,5 @@ Please [create an issue](https://github.com/umfana/FaviconBar/issues)
 If you like the extension and it helps in your daily work, I would appreciate a donation to fund my next great idea :)
 
 [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PR8NL5R9VGMQC)
+
+<a class="coinbase-button" data-code="fc500ed3e306577d11bec9597ab9617a" data-button-style="donation_large" href="https://www.coinbase.com/checkouts/fc500ed3e306577d11bec9597ab9617a">Donate Bitcoins</a><script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
