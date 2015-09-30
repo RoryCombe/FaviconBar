@@ -1,6 +1,6 @@
-safari.extension.settings.addEventListener("change", settingsChanged, false);
+var FaviconBar = {};
 
-function onLoad(){
+FaviconBar.onLoad = function(){
 	var links = safari.extension.settings.links.split(";");
 	var centerBar = safari.extension.settings.centerBar;
 
@@ -12,20 +12,20 @@ function onLoad(){
 		row.classList.remove("centerBar");
 	}
 	
-	renderLinks(links);
+	FaviconBar.renderLinks(links);
 }
 
-function renderLinks(links){
+FaviconBar.renderLinks = function(links){
 	var row = document.getElementById("linksTableRow");
 	row.innerHTML = "";
 	links.map(function(l){
 		if(l && l.length > 0){
-			row.innerHTML += renderLinkHtml(l.trim());
+			row.innerHTML += FaviconBar.renderLinkHtml(l.trim());
 		}
 	});
 }
 
-function renderLinkHtml(link){
+FaviconBar.renderLinkHtml = function(link){
 	return "<td class=\"iconLink\" onmouseover=\"onLinkMouseover(this, event)\" onmouseleave=\"onLinkMouseleave(this, event)\">" +
 		"<a href=\"" + link + "\">" +
 			"<img src=\"" + link + "/favicon.ico\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + link + "';\" width=\"18\" height=\"17\" alt=\"\" title=\"\" url_piece=\"/\" >" +
@@ -33,39 +33,39 @@ function renderLinkHtml(link){
 	"</td>";
 }
 
-function settingsChanged(){
-	onLoad();
+FaviconBar.settingsChanged = function(){
+	FaviconBar.onLoad();
 }
 
-function swapElems(){
+FaviconBar.swapElems = function(){
 	childNode[4].parentNode.insertBefore(childNode[4], childNode[3]);
 }
 
-function linkIsNotDupe(link){
+FaviconBar.linkIsNotDupe = function(link){
 	// check for duplicates here
 	return safari.extension.settings.links.indexOf(link) === -1;
 }
 
-function addNewLink(link){
-	if(link && linkIsNotDupe(link)){
+FaviconBar.addNewLink = function(link){
+	if(link && FaviconBar.linkIsNotDupe(link)){
 		safari.extension.settings.links += ";" + link;
 	}
 }
 
-function onLinkMouseover(elem, event){
+FaviconBar.onLinkMouseover = function(elem, event){
 	console.log("In");
 }
 
-function onLinkMouseleave(elem, event){
+FaviconBar.onLinkMouseleave = function(elem, event){
 	console.log("Out");
 }
 
-function onBarDragenter(elem, event) {
+FaviconBar.onBarDragenter = function(elem, event) {
 	event.preventDefault();
 	return true;
 }
 
-function onBarDragover(elem, event) {
+FaviconBar.onBarDragover = function(elem, event) {
 	if (!event.dataTransfer) {
 		return false;
 	}
@@ -74,11 +74,13 @@ function onBarDragover(elem, event) {
 	return true;
 }
 
-function onBarDrop(elem, event) {
+FaviconBar.onBarDrop = function(elem, event) {
 	if(!event.dataTransfer){
 		return false;
 	}
 	var link = event.dataTransfer.getData("Text");
-	addNewLink(link);
+	FaviconBar.addNewLink(link);
 	return true;
 }
+
+safari.extension.settings.addEventListener("change", FaviconBar.settingsChanged, false);

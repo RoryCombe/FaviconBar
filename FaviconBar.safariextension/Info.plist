@@ -13,16 +13,16 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Bars</key>
 		<array>
 			<dict>
 				<key>Filename</key>
-				<string>extensionBar.html</string>
+				<string>faviconBar.html</string>
 				<key>Identifier</key>
 				<string>FaviconBar</string>
 				<key>Label</key>
@@ -32,7 +32,7 @@
 		<key>Database Quota</key>
 		<real>5242880</real>
 		<key>Global Page</key>
-		<string>extensionBar.html</string>
+		<string>faviconBar.html</string>
 	</dict>
 	<key>Content</key>
 	<dict>
@@ -40,12 +40,12 @@
 		<dict>
 			<key>Start</key>
 			<array>
-				<string>extensionBar.js</string>
+				<string>faviconBar.js</string>
 			</array>
 		</dict>
 		<key>Stylesheets</key>
 		<array>
-			<string>extensionBar.css</string>
+			<string>faviconBar.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

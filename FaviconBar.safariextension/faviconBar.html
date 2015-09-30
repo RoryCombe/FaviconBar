@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Favicon Bar</title>
+		<link rel="stylesheet" href="faviconBar.css" type="text/css" charset="utf-8">
+		<script src="faviconBar.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body 
+		onload="FaviconBar.onLoad();"
+		ondragenter="FaviconBar.onBarDragenter(this, event)"
+		ondragover="FaviconBar.onBarDragover(this, event)"
+		ondrop="FaviconBar.onBarDrop(this, event)">		
+		<table id="linksTable">
+			<tr id="linksTableRow">				
+			</tr>
+		</table>
+	</body>
+</html>
