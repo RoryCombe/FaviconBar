@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Favicon Bar</title>
+		<link rel="stylesheet" href="extensionBar.css" type="text/css" charset="utf-8">
+		<script src="extensionBar.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body 
+		onload="onLoad();"
+		ondragenter="onBarDragenter(this, event)"
+		ondragover="onBarDragover(this, event)"
+		ondrop="onBarDrop(this, event)">		
+		<table id="linksTable">
+			<tr id="linksTableRow">				
+			</tr>
+		</table>
+	</body>
+</html>

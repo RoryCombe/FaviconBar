@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Rory Combe</string>
+	<key>Builder Version</key>
+	<string>10600.8.9</string>
+	<key>CFBundleDisplayName</key>
+	<string>Favicon Bar</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.be.faviconbar</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.2</string>
+	<key>CFBundleVersion</key>
+	<string>1.2</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Bars</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>extensionBar.html</string>
+				<key>Identifier</key>
+				<string>FaviconBar</string>
+				<key>Label</key>
+				<string>Favicon</string>
+			</dict>
+		</array>
+		<key>Database Quota</key>
+		<real>5242880</real>
+		<key>Global Page</key>
+		<string>extensionBar.html</string>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>extensionBar.js</string>
+			</array>
+		</dict>
+		<key>Stylesheets</key>
+		<array>
+			<string>extensionBar.css</string>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>A favicon based favourites bar</string>
+	<key>DeveloperIdentifier</key>
+	<string>FHBT333DVL</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
+	</dict>
+	<key>Update Manifest URL</key>
+	<string>https://raw.githubusercontent.com/umfana/FaviconBar/master/manifest.plist</string>
+	<key>Website</key>
+	<string>https://github.com/umfana/FaviconBar</string>
+</dict>
+</plist>

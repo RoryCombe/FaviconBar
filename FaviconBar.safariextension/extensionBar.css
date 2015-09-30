@@ -1,0 +1,13 @@
+body {
+	margin:0;
+	padding:3px;
+}
+
+.iconLink {
+	padding-left: 5px;
+	padding-right: 5px;	
+}
+
+.centerBar {
+	margin: 0 auto;
+}
