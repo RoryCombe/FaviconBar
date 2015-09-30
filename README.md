@@ -1,7 +1,7 @@
 # FaviconBar
 A favicon based favourites bar for Safari
 
-![](img/screenshot.png)
+![](img/screenshot3.png)
 
 ##Installation
 
