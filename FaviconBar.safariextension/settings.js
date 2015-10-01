@@ -29,6 +29,4 @@ var FaviconSettings = React.createClass({
 	}
 });
 
-var FaviconSettingsFactory = React.createFactory(FaviconSettings);
-
-React.render(FaviconSettingsFactory(), document.getElementById("settingsContainer"));
+React.render(<FaviconSettings/>, document.getElementById("settingsContainer"));
