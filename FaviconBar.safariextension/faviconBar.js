@@ -21,7 +21,7 @@ FaviconBar.applyCentering = function(centerBar){
 }
 
 FaviconBar.renderLinkHtml = function(link){
-	return "<td class=\"iconLink\" onmouseover=\"onLinkMouseover(this, event)\" onmouseleave=\"onLinkMouseleave(this, event)\">" +
+	return "<td class=\"iconLink\">" +
 		"<a href=\"" + link + "\">" +
 			"<img src=\"" + link + "/favicon.ico\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + link + "';\" width=\"18\" height=\"17\" alt=\"\" title=\"\" url_piece=\"/\" >" +
 		"</a>" +
@@ -51,10 +51,6 @@ FaviconBar.settingsChanged = function(event){
 	}
 }
 
-FaviconBar.swapElems = function(){
-	childNode[4].parentNode.insertBefore(childNode[4], childNode[3]);
-}
-
 FaviconBar.linkIsNotDupe = function(link){
 	// check for duplicates here
 	return safari.extension.settings.links.indexOf(link) === -1;
@@ -64,14 +60,6 @@ FaviconBar.addNewLink = function(link){
 	if(link && FaviconBar.linkIsNotDupe(link)){
 		safari.extension.settings.links += ";" + link;
 	}
-}
-
-FaviconBar.onLinkMouseover = function(elem, event){
-	console.log("In");
-}
-
-FaviconBar.onLinkMouseleave = function(elem, event){
-	console.log("Out");
 }
 
 FaviconBar.onBarDragenter = function(elem, event) {
