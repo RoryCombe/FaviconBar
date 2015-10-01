@@ -22,5 +22,19 @@
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>FalseValue</key>
+		<string></string>
+		<key>Key</key>
+		<string>settingsCheckbox</string>
+		<key>Title</key>
+		<string>Click this checkbox to access the settings</string>
+		<key>TrueValue</key>
+		<string></string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
 </array>
 </plist>

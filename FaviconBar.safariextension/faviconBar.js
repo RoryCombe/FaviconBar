@@ -1,20 +1,5 @@
 var FaviconBar = {};
 
-FaviconBar.onLoad = function(){
-	var links = safari.extension.settings.links.split(";");
-	var centerBar = safari.extension.settings.centerBar;
-
-	var row = document.getElementById("linksTable");
-	if(centerBar){
-		row.classList.add("centerBar");
-	}
-	else{
-		row.classList.remove("centerBar");
-	}
-	
-	FaviconBar.renderLinks(links);
-}
-
 FaviconBar.renderLinks = function(links){
 	var row = document.getElementById("linksTableRow");
 	row.innerHTML = "";
@@ -25,6 +10,16 @@ FaviconBar.renderLinks = function(links){
 	});
 }
 
+FaviconBar.applyCentering = function(centerBar){
+	var row = document.getElementById("linksTable");
+	if(centerBar){
+		row.classList.add("centerBar");
+	}
+	else{
+		row.classList.remove("centerBar");
+	}
+}
+
 FaviconBar.renderLinkHtml = function(link){
 	return "<td class=\"iconLink\" onmouseover=\"onLinkMouseover(this, event)\" onmouseleave=\"onLinkMouseleave(this, event)\">" +
 		"<a href=\"" + link + "\">" +
@@ -33,8 +28,27 @@ FaviconBar.renderLinkHtml = function(link){
 	"</td>";
 }
 
-FaviconBar.settingsChanged = function(){
-	FaviconBar.onLoad();
+FaviconBar.onLoad = function(){
+	// alert("onLoad fired");
+	var links = safari.extension.settings.links.split(";");
+	var centerBar = safari.extension.settings.centerBar;
+	FaviconBar.applyCentering(centerBar);
+	FaviconBar.renderLinks(links);
+}
+
+FaviconBar.settingsChanged = function(event){
+	console.log("Settings changed. Details: " + JSON.stringify(event));
+	if(event.key == "links") {
+		FaviconBar.onLoad();
+	}
+	else if(event.key == "centerBar") {
+		FaviconBar.applyCentering(event.newValue);
+	}
+	else if(event.key == "settingsCheckbox") {
+		// safari.extension.settings.settingsCheckbox = false;
+		console.log("Go to settings page");
+		safari.application.activeBrowserWindow.openTab().url = safari.extension.baseURI + "settings.html";
+	}
 }
 
 FaviconBar.swapElems = function(){
