@@ -3,16 +3,43 @@
 	<head>
 		<title>Favicon Bar</title>
 		<link rel="stylesheet" href="faviconBar.css" type="text/css" charset="utf-8">
-		<script src="faviconBar.js" type="text/javascript" charset="utf-8"></script>		
+		<script type="text/javascript">
+			var FaviconBar = safari.extension.globalPage.contentWindow;
+
+			updateBar = function() {
+
+				if (FaviconBar.barData !== false) {
+					document.getElementById("linksTable").innerHTML = FaviconBar.barData;
+				}
+				if (safari.extension.settings.centerBar == "true") {
+					document.getElementById("linksTable").classList.add("centerBar");
+				} else {
+					document.getElementById("linksTable").classList.remove("centerBar");
+				}
+			}
+			
+			clickHandler = function(event) {
+				FaviconBar.clickHandler(event,document.getElementById("dropdown"));
+			}
+						
+			init = function() {
+			
+				document.addEventListener("dragenter",FaviconBar.onBarDragenter);
+				document.addEventListener("dragover",FaviconBar.onBarDragover);
+				document.addEventListener("drop",FaviconBar.onBarDrop);
+				document.addEventListener("contextmenu",clickHandler);
+				document.addEventListener("click",clickHandler);
+				document.getElementById("settings").addEventListener("click",FaviconBar.launchSettings);
+				updateBar();
+			
+			}						
+
+		</script>
 	</head>
-	<body 
-		onload="FaviconBar.onLoad();"
-		ondragenter="FaviconBar.onBarDragenter(this, event)"
-		ondragover="FaviconBar.onBarDragover(this, event)"
-		ondrop="FaviconBar.onBarDrop(this, event)">		
-		<table id="linksTable">
-			<tr id="linksTableRow">				
-			</tr>
-		</table>
+	<body onload="init();">		
+		<div id="linksTable">
+		</div>
+		<div id="settings">&#x2699;</div>
+		<select id="dropdown"></select>
 	</body>
 </html>

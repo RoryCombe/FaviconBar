@@ -1,13 +1,60 @@
 body {
 	margin:0;
-	padding:3px;
 }
 
-.iconLink {
+.smallIcons {
+	width: 16px;
+	height: 16px;
 	padding-left: 5px;
 	padding-right: 5px;	
+	padding-top: 7px;
+//	filter: grayscale(100%) contrast(50%) brightness(150%)  drop-shadow(1px 1px 1px silver);
 }
 
+.largeIcons {
+	width: 24px;
+	height: 24px;
+	padding-left: 5px;
+	padding-right: 5px;	
+	padding-top: 3px;
+}
+
+body {
+margin: 0px;
+padding: 0px;
+}
+
+#linksTable {
+position: absolute;
+width: calc(100% - 30px);
+height: 30px;
+text-align: left;
+overflow: auto;
+}
+
+::-webkit-scrollbar {display:none;}
+
+
 .centerBar {
-	margin: 0 auto;
+	text-align: center !important;
+}
+
+#dropdown {
+	position: absolute;
+	top: 30px;
+	left: 0px;
+	width: 0px;
+	height: 0px;
+	font-size: 12pt;
+}
+
+#settings {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+	padding-top: 8px;
+	color: gray;
 }

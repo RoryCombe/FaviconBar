@@ -15,16 +15,34 @@
 	<dict>
 		<key>DefaultValue</key>
 		<true/>
+		<key>FalseValue</key>
+		<string>false</string>
 		<key>Key</key>
 		<string>centerBar</string>
 		<key>Title</key>
 		<string>Centre the bar</string>
+		<key>TrueValue</key>
+		<string>true</string>
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>
-		<false/>
+		<string>0</string>
+		<key>FalseValue</key>
+		<string>false</string>
+		<key>Key</key>
+		<string>largeIcons</string>
+		<key>Title</key>
+		<string>Use large favicons (may be blurry)</string>
+		<key>TrueValue</key>
+		<string>true</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>0</string>
 		<key>FalseValue</key>
 		<string></string>
 		<key>Key</key>
