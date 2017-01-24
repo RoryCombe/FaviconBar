@@ -47,7 +47,7 @@
 			<key>Include Secure Pages</key>
 			<true/>
 			<key>Level</key>
-			<string>All</string>
+			<string>None</string>
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>

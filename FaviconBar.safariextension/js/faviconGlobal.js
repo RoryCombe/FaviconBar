@@ -30,7 +30,21 @@ renderLinkHtml = function(link,largeIcons){
 	} else {
 		iconCls = "smallIcons";
 	}
-	return 	"<img class=\""+iconCls+"\" data-title=\"I'm a link!\" data-url=\""+link+"\" src=\"" + link + "/favicon.ico\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + link + "';\" >";
+	return 	"<img class=\""+iconCls+"\" data-title=\""+nameURL(link)+"\" data-url=\""+link+"\" src=\"https://icons.better-idea.org/icon?url=" + link + "&size=16..64..256&formats=png\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + link + "';\" >";
+}
+
+nameURL = function(cURL){
+	var array=cURL.split("/")[2].split(".");
+	if ((array.length == 2) || (array[array.length-2].length > 3)) {
+		var sld=array[array.length-2];
+	} else if (array[array.length-3].length > 3) {
+		var sld=array[array.length-3];
+	} else if (array[0] == "www") {
+		var sld=array[1];
+	} else {
+		var sld=array[array.length-3];
+	}
+	return sld.charAt(0).toUpperCase()+sld.slice(1);
 }
 
 settingsChanged = function(event){
@@ -112,12 +126,10 @@ createMenu = function(event, dd) {
 	items[3] = { text: "Open in New Tab", value: 2 };
 	items[4] = { text: "Open in New Window", value: 3 };
 	items[5] = { text: "──────────────────", value: 98, disabled: "disabled" };
-	items[6] = { text: "Copy Link", value: 4 };
-	items[7] = { text: "──────────────────", value: 99, disabled: "disabled" };
-	items[8] = { text: "Edit Title", value: 6 };
-	items[9] = { text: "Edit Link", value: 7 };
-	items[10] = { text: "Change Icon", value: 8 };
-	items[11] = { text: "Remove Link", value: 9 };
+	items[6] = { text: "Edit Title", value: 4 };
+	items[7] = { text: "Edit Link", value: 5 };
+	items[8] = { text: "Change Icon", value: 6 };
+	items[9] = { text: "Remove Link", value: 7 };
 
 	$(dd).empty();
 
@@ -139,16 +151,25 @@ createMenu = function(event, dd) {
 			case "0":
 				break;
 			case "2": 
-				launch(this.options[1].text,'tab');
+				launch($(event.target).data("url"),'tab');
 				break;
 			case "3":
-				launch(this.options[1].text,'win');
+				launch($(event.target).data("url"),'win');
 				break;
 			case "4":
-				alert(this.options[1].text);
+				newtitle = prompt("Title for this link:\n",$(event.target).data("title"));
+				if (newtitle) { $(event.target).data("title", newtitle); }
+				break;
+			case "5":
+				newtitle = prompt("Address for this link:\n",$(event.target).data("url"));
+				if (newtitle) { $(event.target).data("url", newtitle); }
 				break;
 			case "6":
-				alert("delete me!");
+				alert($(event.target).data("title"));
+				alert($(event.target).data("url"));
+				break;
+			case "7":
+				$(event.target).remove();
 				break;
 		}
 	});
