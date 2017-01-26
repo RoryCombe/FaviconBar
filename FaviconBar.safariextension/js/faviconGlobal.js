@@ -1,4 +1,48 @@
 var barData = false;
+/*var settings = [
+  {
+    "Title": "Favicon Title",
+    "Link": "http://url.com/",
+    "Icon": "http://url.com/favicon.ico",
+    "Label": false,
+    "Type": "Icon",
+    "Children": [
+      {
+        "Title": "Child Title",
+        "Link": "Child Link",
+        "Icon": "Child Favicon",
+        "Label": false
+      },
+      {
+        "Title": "Child Title",
+        "Link": "Child Link",
+        "Icon": "Child Favicon",
+        "Label": false
+      }
+    ]
+  },
+  {
+    "Title": "Favicon Title",
+    "Link": "http://url.com/",
+    "Icon": "http://url.com/favicon.ico",
+    "Label": false,
+    "Type": "Icon",
+    "Children": [
+      {
+        "Title": "Child Title",
+        "Link": "Child Link",
+        "Icon": "Child Favicon",
+        "Label": false
+      },
+      {
+        "Title": "Child Title",
+        "Link": "Child Link",
+        "Icon": "Child Favicon",
+        "Label": false
+      }
+    ]
+  }
+];*/
 
 $(document).ready(function() {
 	barData = renderLinks();
@@ -13,27 +57,67 @@ renderBars = function() {
 
 
 renderLinks = function(){
-    var links = safari.extension.settings.links.split(";");
+var links = localStorage.getItem('links');
+if (links) {
+	console.log("Links loaded from Local Storage");
+	links = JSON.parse(links);	
+} else {
+	console.log("Links loaded from Safari settings");
+    links = safari.extension.settings.links.split(";").map(function(l){
+    if (l && l.length > 0){
+    return {
+    	"title": getNameFromLink(l.trim()),
+    	"link": l.trim(),
+    	"icon": getFavicon(l.trim()),
+    	"label": false,
+    	"type": "icon",
+    	"children": null
+    	    }
+    }
+    });
+    localStorage.setItem('links', JSON.stringify(links));
+}
+
 	var results = "";
 	var largeIcons = safari.extension.settings.largeIcons;
 	links.map(function(l){
-		if(l && l.length > 0){
-			results += renderLinkHtml(l.trim(),largeIcons);
-		}
+			results += renderLinkHtml(l,largeIcons);
 	});
 	return results;
 }
 
-renderLinkHtml = function(link,largeIcons){
-	if (largeIcons == "true") {
+renderLinkHtml = function(l,size){
+	if (size == "true") {
 		iconCls = "largeIcons";
 	} else {
 		iconCls = "smallIcons";
 	}
-	return 	"<img class=\""+iconCls+"\" data-title=\""+nameURL(link)+"\" data-url=\""+link+"\" src=\"https://icons.better-idea.org/icon?url=" + link + "&size=16..64..256&formats=png\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + link + "';\" >";
+	//Additional logic for spacers, labels and children will go here.
+	return 	"<img class=\""+iconCls+"\" data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
 }
 
-nameURL = function(cURL){
+saveLinks = function(barObject) {
+var links = [];
+
+$("img",barObject).each(function(i,val){
+	links.push( {
+    	"title": $(val).data("title"),
+    	"link": $(val).data("url"),
+    	"icon": $(val).attr("src"),
+    	"label": false,
+    	"type": "icon",
+    	"children": null
+	});
+});
+
+localStorage.setItem('links', JSON.stringify(links));
+
+//barData = $(barObject).html();
+//renderBars();
+
+}
+
+getNameFromLink = function(cURL){
 	var array=cURL.split("/")[2].split(".");
 	if ((array.length == 2) || (array[array.length-2].length > 3)) {
 		var sld=array[array.length-2];
@@ -158,18 +242,21 @@ createMenu = function(event, dd) {
 				break;
 			case "4":
 				newtitle = prompt("Title for this link:\n",$(event.target).data("title"));
-				if (newtitle) { $(event.target).data("title", newtitle); }
+				if (newtitle) { $(event.target).data("title", newtitle);
+				saveLinks($(event.target).parent("#linksTable")); }
 				break;
 			case "5":
 				newtitle = prompt("Address for this link:\n",$(event.target).data("url"));
-				if (newtitle) { $(event.target).data("url", newtitle); }
+				if (newtitle) { $(event.target).data("url", newtitle);
+				saveLinks($(event.target).parent("#linksTable")); }
 				break;
 			case "6":
-				alert($(event.target).data("title"));
-				alert($(event.target).data("url"));
+				saveLinks($(event.target).parent("#linksTable"));
 				break;
 			case "7":
+				var par = $(event.target).parent("#linksTable");
 				$(event.target).remove();
+				saveLinks($(event.target).parent("#linksTable"));
 				break;
 		}
 	});
@@ -197,6 +284,46 @@ launch = function(link,type) {
 			safari.application.activeBrowserWindow.activeTab.url = link;
 			break;
 		}
+}
+
+getFavicon = function(link) {
+
+	result = $.ajax({
+		method: "GET",
+		dataType: "json",
+		url: "https://icons.better-idea.org/allicons.json?url="+link, 
+		async: false
+	}).responseJSON;
+	
+	favicon = result.icons.filter(function (fv) {
+	  	return fv.width > 64 &&
+	  	fv.width < 129;
+  	});
+
+  	if (favicon.length == 0) {
+  		favicon = result.icons.filter(function (fv) {
+	  		return fv.width > 16 &&
+	  		fv.width < 65;
+  		});  
+  	}
+  
+	if (favicon.length == 0) {
+		favicon = result.icons.filter(function (fv) {
+	  		return fv.width > 128;
+  		});  
+  	}
+  
+  	if (favicon.length == 0) {
+  		favicon = result.icons.filter(function (fv) {
+	  		return fv.width <= 16;
+  		});  
+  	}
+  
+	if (favicon.length > 0) {
+		return favicon[0].url;
+	} else {
+		return null;
+	} 
 }
 
 safari.extension.settings.addEventListener("change", settingsChanged, false);
