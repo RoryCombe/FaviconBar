@@ -2,23 +2,6 @@ body {
 	margin:0;
 }
 
-.smallIcons {
-	width: 16px;
-	height: 16px;
-	padding-left: 5px;
-	padding-right: 5px;	
-	padding-top: 7px;
-//	filter: grayscale(100%) contrast(50%) brightness(150%)  drop-shadow(1px 1px 1px silver);
-}
-
-.largeIcons {
-	width: 24px;
-	height: 24px;
-	padding-left: 5px;
-	padding-right: 5px;	
-	padding-top: 3px;
-}
-
 body {
 margin: 0px;
 padding: 0px;
@@ -32,12 +15,44 @@ text-align: left;
 overflow: auto;
 }
 
+#linksTable img {
+	--filter: grayscale(100%) contrast(50%) brightness(150%)  drop-shadow(1px 1px 1px silver);
+}
+
+#linksTable.small img {
+	padding-left: 3px;
+	padding-right: 3px;	
+	width: 12px;
+	height: 12px;
+	padding-top: 10px;
+
+}
+
+#linksTable.normal img {
+	padding-left: 5px;
+	padding-right: 5px;	
+	width: 16px;
+	height: 16px;
+	padding-top: 7px;
+
+}
+
+#linksTable.large img {
+	padding-left: 7px;
+	padding-right: 7px;	
+	width: 24px;
+	height: 24px;
+	padding-top: 3px;
+
+}
+
+#linksTable.center {
+	text-align: center !important;
+}
+
 ::-webkit-scrollbar {display:none;}
 
 
-.centerBar {
-	text-align: center !important;
-}
 
 #dropdown {
 	position: absolute;

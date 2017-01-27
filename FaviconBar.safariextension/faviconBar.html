@@ -5,18 +5,6 @@
 		<link rel="stylesheet" href="css/faviconBar.css" type="text/css" charset="utf-8">
 		<script type="text/javascript">
 			var FaviconBar = safari.extension.globalPage.contentWindow;
-
-			updateBar = function() {
-
-				if (FaviconBar.barData !== false) {
-					document.getElementById("linksTable").innerHTML = FaviconBar.barData;
-				}
-				if (safari.extension.settings.centerBar == "true") {
-					document.getElementById("linksTable").classList.add("centerBar");
-				} else {
-					document.getElementById("linksTable").classList.remove("centerBar");
-				}
-			}
 			
 			clickHandler = function(event) {
 				FaviconBar.clickHandler(event,document.getElementById("dropdown"));
@@ -30,7 +18,7 @@
 				document.addEventListener("contextmenu",clickHandler);
 				document.addEventListener("click",clickHandler);
 				document.getElementById("settings").addEventListener("click",FaviconBar.launchSettings);
-				updateBar();
+				FaviconBar.initBar(document.getElementById("linksTable"));
 			
 			}						
 

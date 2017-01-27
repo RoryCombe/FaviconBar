@@ -10,35 +10,47 @@
 		<key>Title</key>
 		<string>Links</string>
 		<key>Type</key>
-		<string>TextField</string>
-	</dict>
-	<dict>
-		<key>DefaultValue</key>
-		<true/>
-		<key>FalseValue</key>
-		<string>false</string>
-		<key>Key</key>
-		<string>centerBar</string>
-		<key>Title</key>
-		<string>Centre the bar</string>
-		<key>TrueValue</key>
-		<string>true</string>
-		<key>Type</key>
-		<string>CheckBox</string>
+		<string>Hidden</string>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>
 		<string>0</string>
 		<key>FalseValue</key>
+		<string>0</string>
+		<key>Key</key>
+		<string>centerBar</string>
+		<key>Title</key>
+		<string>Centre the bar                                               </string>
+		<key>TrueValue</key>
+		<string>center</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>normal</string>
+		<key>FalseValue</key>
 		<string>false</string>
 		<key>Key</key>
-		<string>largeIcons</string>
+		<string>iconSize</string>
 		<key>Title</key>
-		<string>Use large favicons (may be blurry)</string>
+		<string>Icon Size</string>
+		<key>Titles</key>
+		<array>
+			<string>Small</string>
+			<string>Normal</string>
+			<string>Large</string>
+		</array>
 		<key>TrueValue</key>
 		<string>true</string>
 		<key>Type</key>
-		<string>CheckBox</string>
+		<string>ListBox</string>
+		<key>Values</key>
+		<array>
+			<string>small</string>
+			<string>normal</string>
+			<string>large</string>
+		</array>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>

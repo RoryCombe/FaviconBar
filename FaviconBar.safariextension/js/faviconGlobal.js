@@ -1,48 +1,4 @@
 var barData = false;
-/*var settings = [
-  {
-    "Title": "Favicon Title",
-    "Link": "http://url.com/",
-    "Icon": "http://url.com/favicon.ico",
-    "Label": false,
-    "Type": "Icon",
-    "Children": [
-      {
-        "Title": "Child Title",
-        "Link": "Child Link",
-        "Icon": "Child Favicon",
-        "Label": false
-      },
-      {
-        "Title": "Child Title",
-        "Link": "Child Link",
-        "Icon": "Child Favicon",
-        "Label": false
-      }
-    ]
-  },
-  {
-    "Title": "Favicon Title",
-    "Link": "http://url.com/",
-    "Icon": "http://url.com/favicon.ico",
-    "Label": false,
-    "Type": "Icon",
-    "Children": [
-      {
-        "Title": "Child Title",
-        "Link": "Child Link",
-        "Icon": "Child Favicon",
-        "Label": false
-      },
-      {
-        "Title": "Child Title",
-        "Link": "Child Link",
-        "Icon": "Child Favicon",
-        "Label": false
-      }
-    ]
-  }
-];*/
 
 $(document).ready(function() {
 	barData = renderLinks();
@@ -51,70 +7,71 @@ $(document).ready(function() {
 
 renderBars = function() {
 	for (var i=0;i<safari.extension.bars.length;++i) {
-		safari.extension.bars[i].contentWindow.updateBar();
+		initBar($("#linksTable",safari.extension.bars[i].contentWindow.document));
+		if (i==0) {
+			saveLinks($("#linksTable",safari.extension.bars[0].contentWindow.document));
+		}
 	}
 }
 
-
-renderLinks = function(){
-var links = localStorage.getItem('links');
-if (links) {
-	console.log("Links loaded from Local Storage");
-	links = JSON.parse(links);	
-} else {
-	console.log("Links loaded from Safari settings");
-    links = safari.extension.settings.links.split(";").map(function(l){
-    if (l && l.length > 0){
-    return {
-    	"title": getNameFromLink(l.trim()),
-    	"link": l.trim(),
-    	"icon": getFavicon(l.trim()),
-    	"label": false,
-    	"type": "icon",
-    	"children": null
-    	    }
-    }
-    });
-    localStorage.setItem('links', JSON.stringify(links));
+initBar = function(bar) {
+	$(bar).html(barData).removeClass("small normal large center").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar);
 }
 
+restyleBars = function() {
+	for (var i=0;i<safari.extension.bars.length;++i) {
+		$("#linksTable",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar);
+	}
+}
+
+renderLinks = function(){
+	var links = localStorage.getItem('links');
+	if (links) {
+		console.log("Links loaded from Local Storage");
+		links = JSON.parse(links);	
+	} else {
+		console.log("Links loaded from Safari settings");
+	    links = safari.extension.settings.links.split(";").map(function(l){
+	    	if (l && l.length > 0){
+	    		return {
+	    			"title": getNameFromLink(l.trim()),
+	    			"link": l.trim(),
+	    			"icon": getFavicon(l.trim()),
+	    			"label": false,
+	    			"type": "icon",
+	    			"children": null
+        		}
+	    	}	
+    	});
+	}
+
 	var results = "";
-	var largeIcons = safari.extension.settings.largeIcons;
 	links.map(function(l){
-			results += renderLinkHtml(l,largeIcons);
+			results += renderLinkHtml(l);
 	});
 	return results;
 }
 
-renderLinkHtml = function(l,size){
-	if (size == "true") {
-		iconCls = "largeIcons";
-	} else {
-		iconCls = "smallIcons";
-	}
+renderLinkHtml = function(l){
 	//Additional logic for spacers, labels and children will go here.
-	return 	"<img class=\""+iconCls+"\" data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+	return 	"<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
 }
 
 saveLinks = function(barObject) {
-var links = [];
+	var links = [];
 
-$("img",barObject).each(function(i,val){
-	links.push( {
-    	"title": $(val).data("title"),
-    	"link": $(val).data("url"),
-    	"icon": $(val).attr("src"),
-    	"label": false,
-    	"type": "icon",
-    	"children": null
+	$("img",barObject).each(function(i,val){
+		links.push( {
+	    	"title": $(val).data("title"),
+	    	"link": $(val).data("url"),
+	    	"icon": $(val).attr("src"),
+	    	"label": false,
+	    	"type": "icon",
+	    	"children": null
+		});
 	});
-});
-
-localStorage.setItem('links', JSON.stringify(links));
-
-//barData = $(barObject).html();
-//renderBars();
-
+	
+	localStorage.setItem('links', JSON.stringify(links));
 }
 
 getNameFromLink = function(cURL){
@@ -133,12 +90,8 @@ getNameFromLink = function(cURL){
 
 settingsChanged = function(event){
 	console.log("Settings changed. Details: " + JSON.stringify(event));
-	if((event.key == "links") || (event.key == "largeIcons")) {
-		barData = renderLinks();
-		renderBars();
-	}
-	else if(event.key == "centerBar") {
-		renderBars();
+	if ((event.key == "iconSize") || (event.key == "centerBar")) {
+		restyleBars();
 	}
 	else if(event.key == "settingsCheckbox") {
 		launchSettings();
@@ -151,15 +104,18 @@ launchSettings = function() {
 		safari.application.activeBrowserWindow.openTab().url = safari.extension.baseURI + "settings.html";
 }
 
-linkIsNotDupe = function(link){
-	// check for duplicates here
-	return safari.extension.settings.links.indexOf(link) === -1;
-}
-
-addNewLink = function(link){
-	if(link && linkIsNotDupe(link)){
-		safari.extension.settings.links += ";" + link;
-		barData = renderLinks();
+addNewLink = function(l){
+	if(l){
+	    link = {
+	    	"title": getNameFromLink(l.trim()),
+	    	"link": l.trim(),
+	    	"icon": getFavicon(l.trim()),
+	    	"label": false,
+	    	"type": "icon",
+	    	"children": null
+	    };
+    	    
+		barData += renderLinkHtml(link);
 		renderBars();
 	}
 }
@@ -189,12 +145,14 @@ onBarDrop = function(event) {
 
 clickHandler = function(event,dd) {
 	if (event.target.nodeName == "IMG") {
-		if (event.button == 2) {
+		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
 			createMenu(event,dd);
+		} else if ((event.button == 1) || ((event.metaKey) && (event.button == 0))) {
+			launch($(event.target).data("url"),"tab");
+		} else if ((event.button == 0) && (event.altKey)) {
+			launch($(event.target).data("url"),"win");
 		} else if (event.button == 0) {
 			launch($(event.target).data("url"));
-		} else if (event.button == 1) {
-			launch($(event.target).data("url"),"tab");
 		}
 	}
 	event.preventDefault();
@@ -243,20 +201,24 @@ createMenu = function(event, dd) {
 			case "4":
 				newtitle = prompt("Title for this link:\n",$(event.target).data("title"));
 				if (newtitle) { $(event.target).data("title", newtitle);
-				saveLinks($(event.target).parent("#linksTable")); }
+				barData = $(event.target).parent("#linksTable").html();
+				renderBars();
+				}
 				break;
 			case "5":
 				newtitle = prompt("Address for this link:\n",$(event.target).data("url"));
 				if (newtitle) { $(event.target).data("url", newtitle);
-				saveLinks($(event.target).parent("#linksTable")); }
+				barData = $(event.target).parent("#linksTable").html();
+				renderBars();
+				}
 				break;
 			case "6":
-				saveLinks($(event.target).parent("#linksTable"));
 				break;
 			case "7":
 				var par = $(event.target).parent("#linksTable");
 				$(event.target).remove();
-				saveLinks($(event.target).parent("#linksTable"));
+				barData = $(par).html();
+				renderBars();
 				break;
 		}
 	});
@@ -268,10 +230,6 @@ createMenu = function(event, dd) {
 	
 }
 
-iconClick = function(event) {
-	alert(event.button);
-}
-
 launch = function(link,type) {
 	switch(type) {
 		case "tab":
@@ -281,7 +239,10 @@ launch = function(link,type) {
 			safari.application.openBrowserWindow().activeTab.url = link;
 			break;
 		default:
-			safari.application.activeBrowserWindow.activeTab.url = link;
+			var tmptab = safari.application.activeBrowserWindow.activeTab;
+			tmptab.url = link;
+			safari.application.activeBrowserWindow.openTab().close();
+			tmptab.activate();
 			break;
 		}
 }
