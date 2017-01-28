@@ -7,9 +7,9 @@ $(document).ready(function() {
 
 renderBars = function() {
 	for (var i=0;i<safari.extension.bars.length;++i) {
-		initBar($("#linksTable",safari.extension.bars[i].contentWindow.document));
+		initBar($("#linkBar",safari.extension.bars[i].contentWindow.document));
 		if (i==0) {
-			saveLinks($("#linksTable",safari.extension.bars[0].contentWindow.document));
+			saveLinks($("#linkBar",safari.extension.bars[0].contentWindow.document));
 		}
 	}
 }
@@ -20,7 +20,7 @@ initBar = function(bar) {
 
 restyleBars = function() {
 	for (var i=0;i<safari.extension.bars.length;++i) {
-		$("#linksTable",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar);
+		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar);
 	}
 }
 
@@ -54,7 +54,7 @@ renderLinks = function(){
 
 renderLinkHtml = function(l){
 	//Additional logic for spacers, labels and children will go here.
-	return 	"<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+	return 	"<img ondragstart=\"FaviconBar.dragItem(event);\" data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
 }
 
 saveLinks = function(barObject) {
@@ -104,7 +104,7 @@ launchSettings = function() {
 		safari.application.activeBrowserWindow.openTab().url = safari.extension.baseURI + "settings.html";
 }
 
-addNewLink = function(l){
+addLink = function(l,event){
 	if(l){
 	    link = {
 	    	"title": getNameFromLink(l.trim()),
@@ -114,10 +114,31 @@ addNewLink = function(l){
 	    	"type": "icon",
 	    	"children": null
 	    };
-    	    
-		barData += renderLinkHtml(link);
+	    if (event.target.nodeName == "IMG") {
+    	    $(renderLinkHtml(link)).insertBefore(event.target);
+    	    barData = $(event.target).parent().html();
+    	    } else {
+			barData += renderLinkHtml(link);
+		}
 		renderBars();
 	}
+}
+
+moveLink = function(event){
+	
+	    if (event.target.nodeName == "IMG") {
+		    $("#dragItem",event.target.parentNode).remove().insertBefore(event.target).removeAttr('id');
+    	    barData = $(event.target).parent().html();
+    	    } else {
+    	    $("#dragItem",event.target).remove().appendTo(event.target).removeAttr('id');
+    	    barData = $(event.target).html();
+		}
+		renderBars();
+}
+
+dragItem = function(event) {
+	event.target.id = "dragItem";
+	event.dataTransfer.setData("Text","dragItem");
 }
 
 onBarDragenter = function(event) {
@@ -129,24 +150,48 @@ onBarDragover = function(event) {
 	if (!event.dataTransfer) {
 		return false;
 	}
-	event.dataTransfer.dropEffect = "copy";
+	if (event.target.nodeName == "IMG") {
+	$(event.target).addClass("drag");
+	}
+	event.dataTransfer.dropEffect = "move";
 	event.preventDefault();
 	return true;
 }
+
+onBarDragleave = function(event) {
+	if (!event.dataTransfer) {
+		return false;
+	}
+	if (event.target.nodeName == "IMG") {
+	$(event.target).removeClass("drag");
+	}
+	return true;
+}
+
 
 onBarDrop = function(event) {
 	if(!event.dataTransfer){
 		return false;
 	}
-	var link = event.dataTransfer.getData("Text");
-	addNewLink(link);
+	$(event.target).removeClass("drag");
+	if (event.dataTransfer.getData("Text") == "dragItem") { 
+		moveLink(event);
+	
+	} else { 
+	
+		var link = event.dataTransfer.getData("Text");
+		addLink(link,event);
+	
+	}
+
+
 	return true;
 }
 
-clickHandler = function(event,dd) {
+clickHandler = function(event) {
 	if (event.target.nodeName == "IMG") {
 		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
-			createMenu(event,dd);
+			createMenu(event);
 		} else if ((event.button == 1) || ((event.metaKey) && (event.button == 0))) {
 			launch($(event.target).data("url"),"tab");
 		} else if ((event.button == 0) && (event.altKey)) {
@@ -158,8 +203,9 @@ clickHandler = function(event,dd) {
 	event.preventDefault();
 }
 
-createMenu = function(event, dd) {
+createMenu = function(event) {
 
+	var dd = $("#dropdown",event.target.parentNode.parentNode)[0];
 	var items = new Array();
 
 	items[0] = { text: $(event.target).data("title"), value: 0, default: "default" };
@@ -172,7 +218,7 @@ createMenu = function(event, dd) {
 	items[7] = { text: "Edit Link", value: 5 };
 	items[8] = { text: "Change Icon", value: 6 };
 	items[9] = { text: "Remove Link", value: 7 };
-
+	
 	$(dd).empty();
 
 	$.each(items,function(i,item){
@@ -201,21 +247,21 @@ createMenu = function(event, dd) {
 			case "4":
 				newtitle = prompt("Title for this link:\n",$(event.target).data("title"));
 				if (newtitle) { $(event.target).data("title", newtitle);
-				barData = $(event.target).parent("#linksTable").html();
+				barData = $(event.target).parent("#linkBar").html();
 				renderBars();
 				}
 				break;
 			case "5":
 				newtitle = prompt("Address for this link:\n",$(event.target).data("url"));
 				if (newtitle) { $(event.target).data("url", newtitle);
-				barData = $(event.target).parent("#linksTable").html();
+				barData = $(event.target).parent("#linkBar").html();
 				renderBars();
 				}
 				break;
 			case "6":
 				break;
 			case "7":
-				var par = $(event.target).parent("#linksTable");
+				var par = $(event.target).parent("#linkBar");
 				$(event.target).remove();
 				barData = $(par).html();
 				renderBars();
@@ -223,11 +269,10 @@ createMenu = function(event, dd) {
 		}
 	});
 		
-			dd.style.left = event.pageX + "px";
+			$(dd).css("left",event.pageX + "px");
 			evt = document.createEvent('MouseEvents');
     		evt.initMouseEvent('mousedown', true, true, window);
     		dd.dispatchEvent(evt);
-	
 }
 
 launch = function(link,type) {
