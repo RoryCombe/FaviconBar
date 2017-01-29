@@ -66,5 +66,19 @@
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>0</string>
+		<key>FalseValue</key>
+		<string>0</string>
+		<key>Key</key>
+		<string>settingsIcon</string>
+		<key>Title</key>
+		<string>Hide Settings icon on the FaviconBar         </string>
+		<key>TrueValue</key>
+		<string>fullwidth</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
 </array>
 </plist>

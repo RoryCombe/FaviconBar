@@ -1,12 +1,26 @@
 var barData = false;
 
 $(document).ready(function() {
+	safari.application.addEventListener("open", openHandler, true);
 	barData = renderLinks();
 	renderBars();
 });
 
 renderBars = function() {
 	for (var i=0;i<safari.extension.bars.length;++i) {
+		if (!safari.extension.bars[i].contentWindow.barInit) {
+		
+				safari.extension.bars[i].contentWindow.barInit = true;	
+				safari.extension.bars[i].contentWindow.document.addEventListener("dragstart",onBarDragstart);
+				safari.extension.bars[i].contentWindow.document.addEventListener("dragenter",onBarDragenter);
+				safari.extension.bars[i].contentWindow.document.addEventListener("dragover",onBarDragover);
+				safari.extension.bars[i].contentWindow.document.addEventListener("dragleave",onBarDragleave);
+				safari.extension.bars[i].contentWindow.document.addEventListener("drop",onBarDrop);
+				safari.extension.bars[i].contentWindow.document.addEventListener("contextmenu",clickHandler);
+				safari.extension.bars[i].contentWindow.document.addEventListener("click",clickHandler);
+				$("#settings",safari.extension.bars[i].contentWindow.document).on("click",launchSettings);
+				
+		}
 		initBar($("#linkBar",safari.extension.bars[i].contentWindow.document));
 		if (i==0) {
 			saveLinks($("#linkBar",safari.extension.bars[0].contentWindow.document));
@@ -14,13 +28,30 @@ renderBars = function() {
 	}
 }
 
+openHandler = function(event) {
+    if (event.target instanceof SafariBrowserWindow) {
+    	//ugly hack for new window because I can't access the extension bar until after it loads faviconBar.html
+		setTimeout(renderBars,500);
+    }
+}
+
 initBar = function(bar) {
-	$(bar).html(barData).removeClass("small normal large center").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar);
+	$(bar).html(barData).removeClass("small normal large center fullwidth 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon);
+	if (safari.extension.settings.settingsIcon == "fullwidth") {
+			$("#settings",$(bar).parent()).hide();
+	} else {
+			$("#settings",$(bar).parent()).show();		
+	}	
 }
 
 restyleBars = function() {
 	for (var i=0;i<safari.extension.bars.length;++i) {
-		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar);
+		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center fullwidth 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon);
+		if (safari.extension.settings.settingsIcon == "fullwidth") {
+			$("#settings",safari.extension.bars[i].contentWindow.document).hide();
+		} else {
+			$("#settings",safari.extension.bars[i].contentWindow.document).show();		
+		}
 	}
 }
 
@@ -53,14 +84,23 @@ renderLinks = function(){
 }
 
 renderLinkHtml = function(l){
-	//Additional logic for spacers, labels and children will go here.
-	return 	"<img ondragstart=\"FaviconBar.dragItem(event);\" data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+	//Additional logic for separators, labels and children will go here.
+if (l) {
+	if (l.type == "icon") {
+		return 	"<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+	} else if (l.type == "separator") {
+		return 	"<hr>";
+	}
+	} else {
+	return "";
+	}
 }
 
 saveLinks = function(barObject) {
 	var links = [];
 
-	$("img",barObject).each(function(i,val){
+	$(barObject).children().each(function(i,val){
+	if ($(val).prop("tagName") == "IMG") {
 		links.push( {
 	    	"title": $(val).data("title"),
 	    	"link": $(val).data("url"),
@@ -69,6 +109,16 @@ saveLinks = function(barObject) {
 	    	"type": "icon",
 	    	"children": null
 		});
+		} else if ($(val).prop("tagName") == "HR") {
+		links.push( {
+	    	"title": null,
+	    	"link": null,
+	    	"icon": null,
+	    	"label": false,
+	    	"type": "separator",
+	    	"children": null
+		});		
+		}
 	});
 	
 	localStorage.setItem('links', JSON.stringify(links));
@@ -90,7 +140,7 @@ getNameFromLink = function(cURL){
 
 settingsChanged = function(event){
 	console.log("Settings changed. Details: " + JSON.stringify(event));
-	if ((event.key == "iconSize") || (event.key == "centerBar")) {
+	if ((event.key == "iconSize") || (event.key == "centerBar") || (event.key == "settingsIcon")) {
 		restyleBars();
 	}
 	else if(event.key == "settingsCheckbox") {
@@ -99,7 +149,6 @@ settingsChanged = function(event){
 }
 
 launchSettings = function() {
-		// safari.extension.settings.settingsCheckbox = false;
 		console.log("Go to settings page");
 		safari.application.activeBrowserWindow.openTab().url = safari.extension.baseURI + "settings.html";
 }
@@ -124,6 +173,12 @@ addLink = function(l,event){
 	}
 }
 
+addSeparator = function(target) {
+	$("<hr>").insertAfter(target);
+    barData = $(target).parent().html();
+    renderBars();
+}
+
 moveLink = function(event){
 	
 	    if (event.target.nodeName == "IMG") {
@@ -136,9 +191,11 @@ moveLink = function(event){
 		renderBars();
 }
 
-dragItem = function(event) {
-	event.target.id = "dragItem";
-	event.dataTransfer.setData("Text","dragItem");
+onBarDragstart = function(event) {
+	if (event.target.nodeName == "IMG") {
+		event.target.id = "dragItem";
+		event.dataTransfer.setData("Text","dragItem");
+	}
 }
 
 onBarDragenter = function(event) {
@@ -178,7 +235,6 @@ onBarDrop = function(event) {
 		moveLink(event);
 	
 	} else { 
-	
 		var link = event.dataTransfer.getData("Text");
 		addLink(link,event);
 	
@@ -189,7 +245,7 @@ onBarDrop = function(event) {
 }
 
 clickHandler = function(event) {
-	if (event.target.nodeName == "IMG") {
+	if ((event.target.nodeName == "IMG") || (event.target.nodeName == "HR")) {
 		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
 			createMenu(event);
 		} else if ((event.button == 1) || ((event.metaKey) && (event.button == 0))) {
@@ -207,17 +263,27 @@ createMenu = function(event) {
 
 	var dd = $("#dropdown",event.target.parentNode.parentNode)[0];
 	var items = new Array();
+	
+	if (event.target.nodeName == "IMG") {
 
 	items[0] = { text: $(event.target).data("title"), value: 0, default: "default" };
 	items[1] = { text: $(event.target).data("url"), value: 1, disabled: "disabled" };
-	items[2] = { text: "──────────────────", value: 97, disabled: "disabled" };
+	items[2] = { text: "──────────────────", value: 9, disabled: "disabled" };
 	items[3] = { text: "Open in New Tab", value: 2 };
 	items[4] = { text: "Open in New Window", value: 3 };
-	items[5] = { text: "──────────────────", value: 98, disabled: "disabled" };
-	items[6] = { text: "Edit Title", value: 4 };
-	items[7] = { text: "Edit Link", value: 5 };
-	items[8] = { text: "Change Icon", value: 6 };
-	items[9] = { text: "Remove Link", value: 7 };
+	items[5] = { text: "──────────────────", value: 10, disabled: "disabled" };
+	items[6] = { text: "Add Separator After", value: 8 };
+	items[7] = { text: "Rename…", value: 4 };
+	items[8] = { text: "Edit Address…", value: 5 };
+	items[9] = { text: "Change Icon…", value: 6 };
+	items[10] = { text: "Delete", value: 7 };
+	
+	} else if (event.target.nodeName == "HR") {
+	items[0] = { text: "Separator", value: 0, default: "default" };
+	items[1] = { text: "──────────────────", value: 9, disabled: "disabled" };
+	items[2] = { text: "Delete", value: 7 };
+	
+	}
 	
 	$(dd).empty();
 
@@ -265,6 +331,9 @@ createMenu = function(event) {
 				$(event.target).remove();
 				barData = $(par).html();
 				renderBars();
+				break;
+			case "8":
+				addSeparator($(event.target));
 				break;
 		}
 	});

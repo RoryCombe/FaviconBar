@@ -3,26 +3,8 @@
 	<head>
 		<title>Favicon Bar</title>
 		<link rel="stylesheet" href="css/faviconBar.css" type="text/css" charset="utf-8">
-		<script type="text/javascript">
-		var FaviconBar = safari.extension.globalPage.contentWindow;		
-	
-			init = function() {
-
-				FaviconBar = safari.extension.globalPage.contentWindow;		
-				document.addEventListener("dragenter",FaviconBar.onBarDragenter);
-				document.addEventListener("dragover",FaviconBar.onBarDragover);
-				document.addEventListener("dragleave",FaviconBar.onBarDragleave);
-				document.addEventListener("drop",FaviconBar.onBarDrop);
-				document.addEventListener("contextmenu",FaviconBar.clickHandler);
-				document.addEventListener("click",FaviconBar.clickHandler);
-				document.getElementById("settings").addEventListener("click",FaviconBar.launchSettings);
-				FaviconBar.initBar(document.getElementById("linkBar"));
-			
-			}						
-
-		</script>
 	</head>
-	<body onload="init();">		
+	<body>		
 		<div id="linkBar">
 		</div>
 		<div id="settings">&#x2699;</div>

@@ -1,8 +1,4 @@
 body {
-	margin:0;
-}
-
-body {
 margin: 0px;
 padding: 0px;
 }
@@ -12,11 +8,34 @@ position: absolute;
 width: calc(100% - 30px);
 height: 30px;
 text-align: left;
-overflow: auto;
+margin: 0px;
+padding: 0px;
+overflow-y: hidden;
+overflow-x: auto;
+}
+
+#linkBar.fullwidth {
+	width: 100% !important;
 }
 
 #linkBar img {
 	--filter: grayscale(100%) contrast(50%) brightness(150%)  drop-shadow(1px 1px 1px silver);
+}
+
+#linkBar img:after {
+	content: "hi";
+}
+
+#linkBar hr {
+display: inline-block;
+width: 1px;
+height: 30px;
+border: solid 0px black;
+background-color: RGBA(0, 0, 0, 0.15);
+margin-left: 3px;
+margin-right: 3px;
+margin-top: 0px;
+margin-bottom: 0px;
 }
 
 #linkBar.small img {
@@ -49,6 +68,31 @@ overflow: auto;
 
 }
 
+#linkBar.small img:hover {
+	padding-left: 4px;
+	padding-right: 2px;	
+	padding-top: 10px;
+	padding-bottom: 8px;
+
+}
+
+#linkBar.normal img:hover {
+	padding-left: 6px;
+	padding-right: 4px;	
+	padding-top: 8px;
+	padding-bottom: 6px;
+
+}
+
+#linkBar.large img:hover {
+	padding-left: 8px;
+	padding-right: 6px;	
+	padding-top: 4px;
+	padding-bottom: 2px;
+
+}
+
+
 #linkBar.center {
 	text-align: center !important;
 }
@@ -58,7 +102,6 @@ img.drag {
 }
 
 ::-webkit-scrollbar {display:none;}
-
 
 
 #dropdown {
