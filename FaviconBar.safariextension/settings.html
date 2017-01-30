@@ -3,24 +3,40 @@
 	<head>
 		<title>Favicon Bar Settings</title>
 		<link rel="stylesheet" href="css/settings.css" type="text/css" charset="utf-8">
-	</head>
-	<body>		
-		<div class="container">
-			<div class="row">
-				<div class="col-md-3">
-					<div class="header clearfix">
-						<h3 class="text-muted"><img src="icon-32.png"> FaviconBar</h3>
-					</div>
-				</div>
-				<div class="col-md-9">
-					<h2>Settings</h2>
-					<hr/>
-					<div id="settingsContainer"></div>
-				</div>
-			</div>
-		</div>
 		<script src="js/jquery.min.js"></script>
 		<script src="js/settings.js"></script>
-		
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h3><img src="icon-32.png"> FaviconBar</h3>
+			</div>
+			<div class="content">
+				<h2>Settings</h2>
+				<hr/>
+				<div id="settingsContainer">
+				<label class="settingrow"><input id="centerBar" type="checkbox"> Centre the bar</label>
+				<label class="settingrow"><input id="settingsIcon" type="checkbox"> Hide settings icon on the bar</label>
+				<label class="settingrow">Icon Size <select id="iconSize">
+				<option value="small">Small
+				<option value="normal">Normal
+				<option value="large">Large
+				</select></label>
+				</div>
+				<h2>Links</h2>
+				<p>Click on an icon or text to edit</p>
+				<hr/>
+				<div id="linksContainer"></div>
+			</div>
+		</div>		
+		<div id="popOver"><div>
+		<div class="header">
+		<h2>Choose an icon for <span id="lnktitle"></span></h3>
+		</div>
+		<div id="iconContainer">
+		</div>
+		<div class="bottom"><span>Favicon address <span>(hint: you can edit this, or drag a picture here)</span></span>
+		<input id="iconURL" type=text>
+		<div class="header"><button id="btncancel">Cancel</button> <button id="btnsave">Save</button></div></div></div>
 	</body>
 </html>

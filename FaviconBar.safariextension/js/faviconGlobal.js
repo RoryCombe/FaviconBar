@@ -1,6 +1,7 @@
 var barData = false;
 
 $(document).ready(function() {
+	safari.application.addEventListener("message", messageHandler, false);
 	safari.application.addEventListener("open", openHandler, true);
 	barData = renderLinks();
 	renderBars();
@@ -53,6 +54,23 @@ restyleBars = function() {
 			$("#settings",safari.extension.bars[i].contentWindow.document).show();		
 		}
 	}
+}
+
+messageHandler = function(msg) {
+    if (msg.name === 'getSetting') {
+        var setting = {
+        name: msg.message,
+        value: safari.extension.settings[msg.message]
+        };
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
+    } else if (msg.name == 'setSetting') {
+        safari.extension.settings[msg.message.name] = msg.message.value;
+        var setting = {
+        name: msg.message.name,
+        value: msg.message.value
+        }
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
+    }
 }
 
 renderLinks = function(){
@@ -139,9 +157,14 @@ getNameFromLink = function(cURL){
 }
 
 settingsChanged = function(event){
-	console.log("Settings changed. Details: " + JSON.stringify(event));
+	console.log("Settings changed.");
 	if ((event.key == "iconSize") || (event.key == "centerBar") || (event.key == "settingsIcon")) {
 		restyleBars();
+		var setting = {
+			name: event.key,
+			value: event.newValue
+		}
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
 	}
 	else if(event.key == "settingsCheckbox") {
 		launchSettings();

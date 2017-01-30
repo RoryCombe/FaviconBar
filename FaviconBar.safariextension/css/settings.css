@@ -1,26 +1,183 @@
-.container {
-	max-width:1000px
+body {
+	font-family: -apple-system;
+	margin: 0px;
+	padding: 0px;
+	font-size: 10pt;
+	font-weight: 100;
 }
 
-.jumbotron {
-	padding: 30px;
-}
-
-.container .jumbotron, .container-fluid .jumbotron {
+.header {
+	background-color: RGBA(0,0,0,0.1);
+	padding-top: 10px;
+	padding-bottom: 10px;
 	padding-left: 30px;
-	padding-right: 30px
+	padding-right: 30px;
+
 }
 
-.jumbotron h2 {
-	margin: 0;
+.content {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 70px;
+	padding-right: 30px;
+
 }
 
-.xfavicon {
+h2 {
+	font-size: 22pt;
+	font-weight: lighter;
+	margin: 0px;
+}
+
+h3 {
+	font-size: 32pt;
+	font-weight: lighter;
+	margin: 0px;
+}
+
+hr {
+	border: solid 0px;
+	border-top: solid 1px RGBA(0,0,0,0.1);
+}
+
+.settingrow, .iconrow {
+	display: inline-block;
+	width: calc(100% - 40px);
+	margin: 0px;
+	padding: 10px;
+	margin-left: 10px;
+}
+.settingrow:nth-child(even), .iconrow:nth-child(even) {
+	background-color: RGBA(0,0,0,0.025);
+}
+.settingrow:nth-child(odd), .iconrow:nth-child(odd) {
+	background-color: RGBA(0,0,0,0.05);
+}
+
+.small {
+	margin-right: 15px;	
+	width: 12px;
+	height: 12px;
+}
+
+.normal {
+	margin-right: 15px;	
 	width: 16px;
 	height: 16px;
-	margin-right: 10px;
 }
 
-.editLink {
+.large {
+	margin-right: 15px;	
+	width: 24px;
+	height: 24px;
+}
+.icontitle {
+	margin-right: 15px; 
+	border: solid 1px transparent;
+}
+.iconlink {
+	color: RGBA(0,0,0,0.5);
+	border: solid 1px transparent;
+}
+.favicon {
+	transition: all 0.5s ease;
+	padding: 20px;
+	margin: 20px 0px 20px 20px;
+	background-color: RGBA(0,0,0,0.075);
+}
+.favicon.large:hover {
+	background-color: RGBA(0,0,0,0.05);
+	width: 48px;
+	height: 48px;
+	padding: 8px;
+	margin: 20px 0px 20px 20px;
+}
+.favicon.normal:hover {
+	background-color: RGBA(0,0,0,0.05);
+	width: 48px;
+	height: 48px;
+	padding: 4px;
+	margin: 20px 0px 20px 20px;
+}
+.favicon.small:hover {
+	background-color: RGBA(0,0,0,0.05);
+	width: 48px;
+	height: 48px;
+	padding: 2px;
+	margin: 20px 0px 20px 20px;
+}
+.bottom {
+position: fixed;
+bottom: 15%;
+right: 15%;
+left: 15%;
+}
+.bottom > .header {
+	text-align: right;
+}
+.bottom > span {
 	margin-left: 10px;
+}
+.bottom > span > span {
+	color: RGBA(0,0,0,0.5);
+}
+button {
+width: 70px;
+height: 21px;
+padding: 3px;
+margin: 3px;
+}
+#btnsave {
+background: linear-gradient(#6fb4f7, #1981fb);
+color: #ffffff;
+border-radius: 5px;
+border: solid 0px;
+}
+#btnsave:active {
+background: linear-gradient(#636363, #323232);
+}
+.editable {
+	color: #000;
+	display: inline-block;
+	outline: 0;
+	border: solid 1px RGBA(0,0,0,0.7);
+	background-color: #FFF;
+	filter: drop-shadow(1px 1px 1px silver);
+	padding: 2px;
+}
+#popOver {
+	position: fixed;
+	padding: 0px;
+	margin: 0px;
+	top: 0px;
+	left: 0px;
+	right: 0px:
+	bottom: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: RGBA(0,0,0,0.5);
+	z-index: 100;
+	display: none;
+}
+#popOver > div {
+	position: fixed;
+	left: 15%;
+	top: 15%;
+	right: 15%;
+	bottom: 15%;
+	background-color: #fff;
+	filter: drop-shadow(5px 5px 20px #000);
+}
+#iconURL {
+	width: calc(100% - 60px);
+	height: 30px;
+	font-size: 22pt;
+	font-weight: lighter;
+	margin: 10px;
+	border-radius: 5px;
+	border: solid 1px RGBA(0,0,0,0.25);
+	background-image: url(icon-32.png);
+	background-size: 32px 32px;
+	background-repeat: no-repeat;
+	padding-left: 35px;
 }

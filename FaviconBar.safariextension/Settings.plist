@@ -74,7 +74,7 @@
 		<key>Key</key>
 		<string>settingsIcon</string>
 		<key>Title</key>
-		<string>Hide Settings icon on the FaviconBar         </string>
+		<string>Hide settings icon on the bar         </string>
 		<key>TrueValue</key>
 		<string>fullwidth</string>
 		<key>Type</key>
