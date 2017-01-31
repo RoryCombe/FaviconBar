@@ -57,6 +57,7 @@ restyleBars = function() {
 }
 
 messageHandler = function(msg) {
+
     if (msg.name === 'getSetting') {
         var setting = {
         name: msg.message,
@@ -65,11 +66,6 @@ messageHandler = function(msg) {
         safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
     } else if (msg.name == 'setSetting') {
         safari.extension.settings[msg.message.name] = msg.message.value;
-        var setting = {
-        name: msg.message.name,
-        value: msg.message.value
-        }
-        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
     }
 }
 
@@ -157,7 +153,6 @@ getNameFromLink = function(cURL){
 }
 
 settingsChanged = function(event){
-	console.log("Settings changed.");
 	if ((event.key == "iconSize") || (event.key == "centerBar") || (event.key == "settingsIcon")) {
 		restyleBars();
 		var setting = {
@@ -172,7 +167,6 @@ settingsChanged = function(event){
 }
 
 launchSettings = function() {
-		console.log("Go to settings page");
 		safari.application.activeBrowserWindow.openTab().url = safari.extension.baseURI + "settings.html";
 }
 

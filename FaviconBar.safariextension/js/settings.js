@@ -54,9 +54,10 @@ $(document).ready(function(){
 	safari.self.tab.dispatchMessage('getSetting', 'centerBar');
 	safari.self.tab.dispatchMessage('getSetting', 'iconSize');
 	safari.self.tab.dispatchMessage('getSetting', 'settingsIcon');
-	
+
 	$("#centerBar").change(function () {
-		if ($(this).attr("checked")) { val = "center"; } else { val = "0"; }
+		var val = "0";
+		if (this.checked) { val = "center"; } 
 		var setting = {
 			name: "centerBar",
 			value: val
@@ -65,7 +66,8 @@ $(document).ready(function(){
 	});
 
 	$("#settingsIcon").change(function () {
-		if ($(this).attr("checked")) { val = "fullwidth"; } else { val = "0"; }
+		var val = "0";
+		if (this.checked) { val = "fullwidth"; } 
 		var setting = {
 			name: "settingsIcon",
 			value: val
@@ -100,12 +102,10 @@ $(document).ready(function(){
 	
 	$(".iconrow > img").bind("click", function() {
 		$("#iconContainer").html(iconLookup($(this).parent().data("url")));
-		$("#iconURL").css("backgroundImage","url("+$(this).parent().data("icon")+")");
-		$("#iconURL").val($(this).parent().data("icon"));
+		$("#iconURL").val($(this).parent().data("icon")).change();
 		$("#lnktitle").text($(this).parent().data("title"));
 		$("#popOver").show();
-		console.log($(this).parent());
-		$("btnsave").data("referrer",$(this).parent());
+		$("#btnsave").data("referrer",$(this).parent());
 	});
 	
 	$("#iconURL").bind("change", function() {
@@ -113,19 +113,52 @@ $(document).ready(function(){
 	});
 	
 	$("#iconContainer").on("click", "img", function(){
-		$("#iconURL").css("backgroundImage","url("+$(this).attr("src")+")");
-		$("#iconURL").val($(this).attr("src"));
+		$("#iconURL").val($(this).attr("src")).change();
 	});
 	
 	$("#btnsave").bind("click", function() {
-// This part is not working
-//		$($(this).data("referrer")).data("icon",$("#iconURL").val());
-//		$("img",$(this).data("referrer")).attr("src",$("#iconURL").val());
+		$($("#btnsave").data("referrer")).data("icon",$("#iconURL").val());
+		$("img",$("#btnsave").data("referrer")).attr("src",$("#iconURL").val());
 		$("#popOver").hide();
 	});
 
 	$("#btncancel").bind("click", function() {
 			$("#popOver").hide();
+	});
+
+	$("#popOver").bind("dragenter dragover drop", function(event) {
+	    event.stopPropagation();
+		event.preventDefault();
+	});
+
+	$("#iconURL").bind("dragenter dragover", function(event) {
+		if (!event.originalEvent.dataTransfer) {
+			return false;
+		}
+		event.originalEvent.dataTransfer.dropEffect = "copy";	
+	    event.stopPropagation();
+		event.preventDefault();
+	});
+	
+	$("#iconURL").bind("drop", function(event) {
+		if (!event.originalEvent.dataTransfer) {
+			return false;
+		}
+	    event.stopPropagation();
+		event.preventDefault();
+
+        if(event.originalEvent.dataTransfer.files.length > 0) {
+        
+        file = event.originalEvent.dataTransfer.files[0];
+            var fileReader = new FileReader();
+                fileReader.onload = (function(file) {
+                   return function(event) { 
+                     $("#iconURL").val(event.target.result).change(); 
+                   }; 
+                })(file);
+            fileReader.readAsDataURL(file);
+		}
+
 	});
 
 });
