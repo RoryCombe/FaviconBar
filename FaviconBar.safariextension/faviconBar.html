@@ -3,8 +3,15 @@
 	<head>
 		<title>Favicon Bar</title>
 		<link rel="stylesheet" href="css/faviconBar.css" type="text/css" charset="utf-8">
+		<script>
+			function init() {
+				if (safari.extension.globalPage.contentWindow) {
+					safari.extension.globalPage.contentWindow.renderBars();
+				}
+			}
+		</script>
 	</head>
-	<body>		
+	<body onload="init();">		
 		<div id="linkBar">
 		</div>
 		<div id="settings">&#x2699;</div>

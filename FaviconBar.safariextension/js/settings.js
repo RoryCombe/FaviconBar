@@ -19,7 +19,7 @@ renderLinkHtml = function(l){
 	//Additional logic for separators, labels and children will go here.
 	if (l) {
 	if (l.type == "icon") {
-		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\"><img title='Click to choose image' class=\"normal\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span></p>";
+		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\"><img title='Click to choose image' class=\"normal\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Delete' class='icondelete'>&#9587;</span></p>";
 	} else if (l.type == "separator") {
 		return 	"<hr>";
 	}
@@ -100,12 +100,23 @@ $(document).ready(function(){
 		$(this).removeClass("editable");
 	});
 	
+	$(".icondelete").bind("click", function() {
+	if (confirm("Delete this link?")) {
+		$(this).parent().remove();
+	}	
+	});
+		
 	$(".iconrow > img").bind("click", function() {
-		$("#iconContainer").html(iconLookup($(this).parent().data("url")));
+		$("#iconContainer").html("<div class='loader'>Loading...</div>");
 		$("#iconURL").val($(this).parent().data("icon")).change();
 		$("#lnktitle").text($(this).parent().data("title"));
-		$("#popOver").show();
 		$("#btnsave").data("referrer",$(this).parent());
+		$("#popOver").show();
+		var link = $(this).parent().data("url");
+		setTimeout(function() {
+			var returnhtml = iconLookup(link);
+			$("#iconContainer").html(returnhtml);
+		}, 10);
 	});
 	
 	$("#iconURL").bind("change", function() {
@@ -150,6 +161,9 @@ $(document).ready(function(){
         if(event.originalEvent.dataTransfer.files.length > 0) {
         
         file = event.originalEvent.dataTransfer.files[0];
+        if (file.size > 102400) {
+        	alert("This icon is too large.\n\nPlease limit icon file size to less than 100KB");
+        } else {
             var fileReader = new FileReader();
                 fileReader.onload = (function(file) {
                    return function(event) { 
@@ -157,6 +171,7 @@ $(document).ready(function(){
                    }; 
                 })(file);
             fileReader.readAsDataURL(file);
+		}
 		}
 
 	});

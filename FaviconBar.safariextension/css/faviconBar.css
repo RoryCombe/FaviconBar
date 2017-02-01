@@ -68,7 +68,7 @@ margin-bottom: 0px;
 
 }
 
-#linkBar.small img:hover {
+#linkBar.small img.hover {
 	padding-left: 4px;
 	padding-right: 2px;	
 	padding-top: 10px;
@@ -76,7 +76,7 @@ margin-bottom: 0px;
 
 }
 
-#linkBar.normal img:hover {
+#linkBar.normal img.hover {
 	padding-left: 6px;
 	padding-right: 4px;	
 	padding-top: 8px;
@@ -84,7 +84,7 @@ margin-bottom: 0px;
 
 }
 
-#linkBar.large img:hover {
+#linkBar.large img.hover {
 	padding-left: 8px;
 	padding-right: 6px;	
 	padding-top: 4px;

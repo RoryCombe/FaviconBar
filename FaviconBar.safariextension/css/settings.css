@@ -27,6 +27,7 @@ h2 {
 	font-size: 22pt;
 	font-weight: lighter;
 	margin: 0px;
+	margin-top: 10px;
 }
 
 h3 {
@@ -78,6 +79,27 @@ hr {
 .iconlink {
 	color: RGBA(0,0,0,0.5);
 	border: solid 1px transparent;
+}
+.icondelete {
+	transition: all 0.2s ease;
+	color: RGBA(0, 0, 0, 0.3);
+	background-color: RGBA(255,255,255,0.5);
+	float: right;
+	padding: 4px;
+	border-radius: 5px;
+	width: 16px;
+	height: 16px;
+	text-align: center;
+	cursor: default;
+}
+.icondelete:hover {
+	background-color: #fff;
+	color: #000;
+}
+
+.icondelete:active {
+	background-color: RGBA(0,0,0,0.3);
+	color: #fff;
 }
 .favicon {
 	transition: all 0.5s ease;
@@ -181,3 +203,25 @@ background: linear-gradient(#636363, #323232);
 	background-repeat: no-repeat;
 	padding-left: 35px;
 }
+
+.loader {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin: 50px auto;
+  font-size: 0px;
+  border-top: 2px solid rgba(0,0,0,0.1);
+  border-right: 2px solid rgba(0,0,0,0.1);
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  border-left: 2px solid rgba(0,0,0,0.5);
+  animation: loader 1s infinite linear;
+}
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

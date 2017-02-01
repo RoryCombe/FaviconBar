@@ -30,7 +30,7 @@
 			</dict>
 		</array>
 		<key>Database Quota</key>
-		<real>5242880</real>
+		<integer>10485760</integer>
 		<key>Global Page</key>
 		<string>faviconGlobal.html</string>
 	</dict>
@@ -44,14 +44,10 @@
 	<dict>
 		<key>Website Access</key>
 		<dict>
-			<key>Allowed Domains</key>
-			<array>
-				<string>icons.better-idea.org</string>
-			</array>
 			<key>Include Secure Pages</key>
 			<true/>
 			<key>Level</key>
-			<string>Some</string>
+			<string>All</string>
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
