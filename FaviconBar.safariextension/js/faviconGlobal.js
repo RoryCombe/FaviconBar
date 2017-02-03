@@ -70,16 +70,20 @@ messageHandler = function(msg) {
         safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
     } else if (msg.name == 'setSetting') {
         safari.extension.settings[msg.message.name] = msg.message.value;
+    } else if (msg.name == 'updateBars') {
+    	localStorage.setItem('links', JSON.stringify(msg.message));
+    	barData = renderLinks();
+    	renderBars();
+    } else if (msg.name == 'getLinks') {
+    	safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnLinks',localStorage.getItem('links'));
     }
 }
 
 renderLinks = function(){
 	var links = localStorage.getItem('links');
 	if (links) {
-		console.log("Links loaded from Local Storage");
 		links = JSON.parse(links);	
 	} else {
-		console.log("Links loaded from Safari settings");
 	    links = safari.extension.settings.links.split(";").map(function(l){
 	    	if (l && l.length > 0){
 	    		return {
@@ -103,18 +107,14 @@ renderLinks = function(){
 
 renderLinkHtml = function(l){
 	//Additional logic for separators, labels and children will go here.
-	console.log('renderlinkHtml - got a link here we go');
 
 if (l) {
 	if (l.type == "icon") {
-	console.log('renderlinkHtml - link is an icon, rendering');
 		return 	"<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
 	} else if (l.type == "separator") {
-	console.log('renderlinkHtml - link is a separator, rendering');
 		return 	"<hr>";
 	}
 	} else {
-	console.log('renderlinkHtml - link is nothing, so sad');
 	return "";
 	}
 }
@@ -148,7 +148,6 @@ saveLinks = function(barObject) {
 }
 
 getNameFromLink = function(cURL){
-	console.log('getNamefromlink - this is easy, shouldnt fail...');
 	var array=cURL.split("/")[2].split(".");
 	if ((array.length == 2) || (array[array.length-2].length > 3)) {
 		var sld=array[array.length-2];
@@ -159,7 +158,6 @@ getNameFromLink = function(cURL){
 	} else {
 		var sld=array[array.length-3];
 	}
-	console.log('getNamefromlink - returning value');
 	return sld.charAt(0).toUpperCase()+sld.slice(1);
 }
 
@@ -182,10 +180,8 @@ launchSettings = function() {
 }
 
 addLink = function(l,event){
-	console.log('addLink - here we are adding a link');
 	if (!l) { l = safari.application.activeBrowserWindow.activeTab.url; }
 	if(l){
-	console.log('addlink - link found, happiness');
 	    link = {
 	    	"title": getNameFromLink(l.trim()),
 	    	"link": l.trim(),
@@ -194,18 +190,12 @@ addLink = function(l,event){
 	    	"type": "icon",
 	    	"children": null
 	    };
-	console.log(link);
 	    if (event.target.nodeName == "IMG") {
-	console.log('addlink - dropped on an image, rendering link');
-
     	    $(renderLinkHtml(link)).insertBefore(event.target);
-	console.log('addlink - updating bar data');
     	    barData = $(event.target).parent().html();
     	    } else {
-	console.log('addlink - link dropped on empty space, rendering link & bardata');
 			barData += renderLinkHtml(link);
 		}
-	console.log('addlink - rendering bars');
 		renderBars();
 	}
 }
@@ -266,28 +256,20 @@ onBarDragleave = function(event) {
 
 onBarDrop = function(event) {
 	if(!event.dataTransfer){
-	console.log('drop - no data transfer, cancel');
 		return false;
 	}
 	
 	$(event.target).removeClass("drag");
-	console.log('drop - removed drag class');
 	
 	if (event.dataTransfer.getData("Text") == "dragItem") { 
-	console.log('drop - drag reorder detected');
 		if (event.target == $("#dragItem",event.target.parentNode)[0]) {
-	console.log('drop - icon dropped on itself, cancel');
 			return false;
 		} else {
-	console.log('drop - icon dropped elsewhere, moving');
 			moveLink(event);
 		}
 	
 	} else { 
-	console.log('drop - new item dropped adding link');
 		var link = event.dataTransfer.getData("Text");
-	console.log('drop - wait do we have text? '+link);
-	console.log(event);
 		addLink(link,event);
 	
 	}
@@ -430,7 +412,6 @@ launch = function(link,type) {
 }
 
 getFavicon = function(link) {
-	console.log('getting favicon - could be dicey here we go');
 
 	result = $.ajax({
 		method: "GET",
@@ -438,16 +419,13 @@ getFavicon = function(link) {
 		url: "https://icons.better-idea.org/allicons.json?url="+link, 
 		async: false
 	}).responseJSON;
-	console.log('getting favicon - ajax request called and we have a response');
 	
 	favicon = result.icons.filter(function (fv) {
 	  	return fv.width > 64 &&
 	  	fv.width < 129;
   	});
-	console.log('getting favicon - filtered for big icons');
 
   	if (favicon.length == 0) {
-	console.log('getting favicon - no big icons, going smaller');
   		favicon = result.icons.filter(function (fv) {
 	  		return fv.width > 16 &&
 	  		fv.width < 65;
@@ -455,24 +433,20 @@ getFavicon = function(link) {
   	}
   
 	if (favicon.length == 0) {
-	console.log('getting favicon - no small icons, going bigger');
 		favicon = result.icons.filter(function (fv) {
 	  		return fv.width > 128;
   		});  
   	}
   
   	if (favicon.length == 0) {
-	console.log('getting favicon - no big icons, maybe tiny?');
   		favicon = result.icons.filter(function (fv) {
 	  		return fv.width <= 16;
   		});  
   	}
   
 	if (favicon.length > 0) {
-	console.log('getting favicon - returning first icon');
 		return favicon[0].url;
 	} else {
-	console.log('getting favicon - we didnt find any, that sucks');
 		return null;
 	} 
 }

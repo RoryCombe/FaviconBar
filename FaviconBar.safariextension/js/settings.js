@@ -6,6 +6,15 @@ messageHandler = function(msg) {
 	if(msg.name == 'returnSetting') {
 	settings[msg.message.name] = msg.message.value;
 	updateSettings();
+	} else if (msg.name == 'returnLinks') {
+		var results = "";
+		var links = msg.message;
+		links = JSON.parse(links);	
+		links.map(function(l){
+			results += renderLinkHtml(l);
+		});
+		$('#linksContainer').html(results);
+		finishBinds();
 	}
 }
 
@@ -47,6 +56,78 @@ iconLookup = function(link) {
 	return retval; 
 }
 
+saveLinks = function() {
+	var links = [];
+
+	$("#linksContainer").children().each(function(i,val){
+	if ($(val).prop("tagName") == "P") {
+		links.push( {
+	    	"title": $(val).data("title"),
+	    	"link": $(val).data("url"),
+	    	"icon": $(val).data("icon"),
+	    	"label": false,
+	    	"type": "icon",
+	    	"children": null
+		});
+		} else if ($(val).prop("tagName") == "HR") {
+		links.push( {
+	    	"title": null,
+	    	"link": null,
+	    	"icon": null,
+	    	"label": false,
+	    	"type": "separator",
+	    	"children": null
+		});		
+		}
+	});
+	safari.self.tab.dispatchMessage('updateBars',links);
+	
+}
+
+finishBinds = function() {
+	$(".icontitle").bind("click", function() {
+		$(this).attr("contentEditable", true);
+		$(this).addClass("editable");
+		$(this).trigger("focus");
+	}).blur(function() {
+		$(this).parent().data("title",this.textContent);
+		$(this).attr("contentEditable", false);
+		$(this).removeClass("editable");
+		saveLinks();
+	});
+	
+	$(".iconlink").bind("click", function() {
+		$(this).attr("contentEditable", true);
+		$(this).addClass("editable");
+		$(this).trigger("focus");
+	}).blur(function() {
+		$(this).parent().data("url",this.textContent);
+		$(this).attr("contentEditable", false);
+		$(this).removeClass("editable");
+		saveLinks();
+	});
+	
+	$(".icondelete").bind("click", function() {
+	if (confirm("Delete this link?")) {
+		$(this).parent().remove();
+		saveLinks();
+	}	
+	});
+		
+	$(".iconrow > img").bind("click", function() {
+		$("#iconContainer").html("<div class='loader'>Loading...</div>");
+		$("#iconURL").val($(this).parent().data("icon")).change();
+		$("#lnktitle").text($(this).parent().data("title"));
+		$("#btnsave").data("referrer",$(this).parent());
+		$("#popOver").show();
+		var link = $(this).parent().data("url");
+		setTimeout(function() {
+			var returnhtml = iconLookup(link);
+			$("#iconContainer").html(returnhtml);
+		}, 10);
+	});
+}
+
 
 $(document).ready(function(){
 
@@ -54,6 +135,7 @@ $(document).ready(function(){
 	safari.self.tab.dispatchMessage('getSetting', 'centerBar');
 	safari.self.tab.dispatchMessage('getSetting', 'iconSize');
 	safari.self.tab.dispatchMessage('getSetting', 'settingsIcon');
+	safari.self.tab.dispatchMessage('getLinks', true);
 
 	$("#centerBar").change(function () {
 		var val = "0";
@@ -83,42 +165,6 @@ $(document).ready(function(){
 		safari.self.tab.dispatchMessage('setSetting',setting);
 	});
 	
-	var results = "";
-	var links = localStorage.getItem('links');
-	links = JSON.parse(links);	
-	links.map(function(l){
-			results += renderLinkHtml(l);
-	});
-	$('#linksContainer').html(results);
-	
-	$(".icontitle, .iconlink").bind("click", function() {
-		$(this).attr("contentEditable", true);
-		$(this).addClass("editable");
-		$(this).trigger("focus");
-	}).blur(function() {
-		$(this).attr("contentEditable", false);
-		$(this).removeClass("editable");
-	});
-	
-	$(".icondelete").bind("click", function() {
-	if (confirm("Delete this link?")) {
-		$(this).parent().remove();
-	}	
-	});
-		
-	$(".iconrow > img").bind("click", function() {
-		$("#iconContainer").html("<div class='loader'>Loading...</div>");
-		$("#iconURL").val($(this).parent().data("icon")).change();
-		$("#lnktitle").text($(this).parent().data("title"));
-		$("#btnsave").data("referrer",$(this).parent());
-		$("#popOver").show();
-		var link = $(this).parent().data("url");
-		setTimeout(function() {
-			var returnhtml = iconLookup(link);
-			$("#iconContainer").html(returnhtml);
-		}, 10);
-	});
-	
 	$("#iconURL").bind("change", function() {
 		$(this).css("backgroundImage","url("+$(this).val()+")");
 	});
@@ -131,6 +177,7 @@ $(document).ready(function(){
 		$($("#btnsave").data("referrer")).data("icon",$("#iconURL").val());
 		$("img",$("#btnsave").data("referrer")).attr("src",$("#iconURL").val());
 		$("#popOver").hide();
+		saveLinks();
 	});
 
 	$("#btncancel").bind("click", function() {
