@@ -128,7 +128,7 @@ renderLinkHtml = function(l){
 	var retval = "";
 	if (l) {
 		if (l.type == "icon") {
-			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
 			if (l.label) {
 				retval += "<label class='iconlabel'>"+l.title+"</label>";
 			}
@@ -194,8 +194,8 @@ settingsChanged = function(event){
 	}
 }
 
-launchSettings = function() {
-		safari.application.activeBrowserWindow.openTab().url = safari.extension.baseURI + "settings.html";
+launchSettings = function(qs) {
+		launch(safari.extension.baseURI + "settings.html?"+qs,"tab");
 }
 
 addLink = function(l,event){
@@ -298,14 +298,14 @@ onBarDrop = function(event) {
 }
 
 onBarMousedown = function(event) {
-	if((event.target.nodeName == "IMG") || (event.target.nodeName == "LABEL")) {
+	if((event.target.nodeName == "IMG") || (event.target.nodeName == "LABEL") || (event.target.nodeName == "SPAN")) {
 		$(event.target).addClass("hover");
 	}
 	return true;
 }
 
 onBarMouseup = function(event) {
-	if((event.target.nodeName == "IMG") || (event.target.nodeName == "LABEL")) {
+	if((event.target.nodeName == "IMG") || (event.target.nodeName == "LABEL") || (event.target.nodeName == "SPAN")) {
 		$(event.target).removeClass("hover");
 	}
 	return true;
@@ -409,6 +409,7 @@ createMenu = function(event) {
 				}
 				break;
 			case "6":
+					launchSettings($(target).data("icon"));
 				break;
 			case "7":
 				if (confirm("Delete this link?")) {

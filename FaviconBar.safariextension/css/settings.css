@@ -55,6 +55,10 @@ hr {
 	background-color: RGBA(0,0,0,0.05);
 }
 
+.round {
+	border-radius: 50%;
+}
+
 .small {
 	margin-right: 15px;	
 	width: 12px;
@@ -157,7 +161,7 @@ left: 15%;
 .bottom > span > span {
 	color: RGBA(0,0,0,0.5);
 }
-button {
+#btnsave, #btncancel {
 width: 70px;
 height: 21px;
 padding: 3px;

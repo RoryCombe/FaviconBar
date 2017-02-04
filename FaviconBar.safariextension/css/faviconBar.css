@@ -55,8 +55,8 @@ body {
 }
 
 #linkBar.large img {
-	padding-left: 7px;
-	padding-right: 7px;	
+	padding-left: 5px;
+	padding-right: 5px;	
 	width: 24px;
 	height: 24px;
 	padding-top: 3px;
@@ -105,6 +105,11 @@ body {
 	margin-right: -1px;
 }
 
+#settings.hover {
+	top: 1px;
+	width: 29px;
+}
+
 #linkBar.center {
 	text-align: center !important;
 }
@@ -132,6 +137,6 @@ img.drag {
 	width: 30px;
 	height: 30px;
 	text-align: center;
-	padding-top: 8px;
+	padding-top: 7px;
 	color: gray;
 }

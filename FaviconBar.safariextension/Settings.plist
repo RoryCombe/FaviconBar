@@ -30,7 +30,7 @@
 		<key>TrueValue</key>
 		<string>true</string>
 		<key>Type</key>
-		<string>ListBox</string>
+		<string>Hidden</string>
 		<key>Values</key>
 		<array>
 			<string>small</string>
@@ -40,7 +40,7 @@
 	</dict>
 	<dict>
 		<key>DefaultValue</key>
-		<string>0</string>
+		<string>center</string>
 		<key>FalseValue</key>
 		<string>0</string>
 		<key>Key</key>
@@ -50,7 +50,7 @@
 		<key>TrueValue</key>
 		<string>center</string>
 		<key>Type</key>
-		<string>CheckBox</string>
+		<string>Hidden</string>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>
@@ -64,7 +64,7 @@
 		<key>TrueValue</key>
 		<string>fullwidth</string>
 		<key>Type</key>
-		<string>CheckBox</string>
+		<string>Hidden</string>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>

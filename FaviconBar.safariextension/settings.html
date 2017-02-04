@@ -15,7 +15,11 @@
 				<h2>Settings</h2>
 				<hr/>
 				<div id="settingsContainer">
-				<label class="settingrow"><input id="settingsIcon" type="checkbox" value="fullwidth"> Hide settings icon on the bar</label>
+				<label class="settingrow"><a href="" style="display: none;" id="settingsdl">download</a>
+				Save settings and links to a file <button id="dlsettings">Download</button></label>
+				<label class="settingrow">Load settings and links from a file <button onclick="document.getElementById('ulsettings').click();">Choose File</button><input style="display: none" type="file" id="ulsettings" />
+				</label>
+				<label class="settingrow"><input id="settingsIcon" type="checkbox" value="fullwidth"> Hide settings icon on the bar (you can still access this page from Safari preferences)</label>
 				<hr/>
 				<label class="settingrow">Icon Size <select id="iconSize">
 				<option value="small">Small

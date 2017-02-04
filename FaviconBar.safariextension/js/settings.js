@@ -1,6 +1,6 @@
 //var safariLinks = "https://apple.com/; https://parse.com; https://trello.com/; https://bitbucket.org; https://github.com/; https://sidefield.com; https://news.ycombinator.com; https://www.reddit.com/r/all; https://www.youtube.com/; https://pinboard.in/u:umfana; http://xkcd.com/; https://twitter.com; https://facebook.com; https://dropbox.com; http://getbootstrap.com/; https://mail.google.com; https://buffer.com/; http://facebook.github.io/react/; http://facebook.github.io/react-native/; http://www.munichirishrovers.de/; https://www.bitfountain.io/; http://www.pivotaltracker.com/; https://talky.io/; https://www.evernote.com/; https://c9.io/; https://delicious.com/umfana; http://ionicframework.com/docs/components/; https://www.quora.com/; https://web.whatsapp.com/; https://www.coinbase.com/; https://www.fastmail.com/mail/Inbox/?u=1c944178; http://umfana.github.io/FaviconBar/";
 
-var settings = [];
+var settings = {};
 
 messageHandler = function(msg) {
 	if(msg.name == 'returnSetting') {
@@ -9,32 +9,49 @@ messageHandler = function(msg) {
 	} else if (msg.name == 'returnLinks') {
 		var results = "";
 		var links = msg.message;
-		links = JSON.parse(links);	
-		links.map(function(l){
+		settings.links = JSON.parse(links);	
+		settings.links.map(function(l){
 			results += renderLinkHtml(l);
 		});
 		$('#linksContainer').html(results);
 		finishBinds();
+		targetIcon = window.location.href.slice(window.location.href.indexOf("?")+1);
+		if (targetIcon) {
+			$("p[data-icon='"+targetIcon+"']>img").click();
+		}
 	}
 }
 
+
 updateSettings = function() {
-	if (settings["iconSize"]) {	$("p.iconrow img").removeClass("small normal large 0").addClass(settings["iconSize"]);$("#iconSize").val(settings["iconSize"]);}
-	if (settings["centerBar"]) {	if (settings["centerBar"] == "center") { $("#centerBar").prop('checked',true); } else { $("#centerBar").prop('checked',false); }}
-	if (settings["roundIcons"]) {	if (settings["roundIcons"] == "round") { $("#roundIcons").prop('checked',true); } else { $("#roundIcons").prop('checked',false); }}
-	if (settings["filterdropshadow"]) {	if (settings["filterdropshadow"] == "true") { $("#filterdropshadow").prop('checked',true); } else { $("#filterdropshadow").prop('checked',false); }}
-	if (settings["filtergrayscale"]) {	if (settings["filtergrayscale"] == "true") { $("#filtergrayscale").prop('checked',true); } else { $("#filtergrayscale").prop('checked',false); }}
-	if (settings["filterlighten"]) {	if (settings["filterlighten"] == "true") { $("#filterlighten").prop('checked',true); } else { $("#filterlighten").prop('checked',false); }}
-	if (settings["filtercustomCSS"]) {	if (settings["filtercustomCSS"]) { $("#filtercustomCSS").val(settings["filtercustomCSS"]); } else { $("#filterlighten").val(""); }}
-	if (settings["settingsIcon"]) {	if (settings["settingsIcon"] == "fullwidth") { $("#settingsIcon").prop('checked',true); } else { $("#settingsIcon").prop('checked',false); }}
+	if (settings.centerBar) {	if (settings.centerBar == "center") { $("#centerBar").prop('checked',true); } else { $("#centerBar").prop('checked',false); }}
+	if (settings.iconSize) {	$("p.iconrow img").removeClass("small normal large 0").addClass(settings.iconSize);$("#iconSize").val(settings.iconSize);}
+	if (settings.roundIcons) {	$("p.iconrow img").removeClass("round 0").addClass(settings.roundIcons);if (settings.roundIcons == "round") { $("#roundIcons").prop('checked',true); } else { $("#roundIcons").prop('checked',false); }}
+	if (settings.filterdropshadow) {	if (settings.filterdropshadow == "true") { $("#filterdropshadow").prop('checked',true); } else { $("#filterdropshadow").prop('checked',false); }}
+	if (settings.filtergrayscale) {	if (settings.filtergrayscale == "true") { $("#filtergrayscale").prop('checked',true); } else { $("#filtergrayscale").prop('checked',false); }}
+	if (settings.filterlighten) {	if (settings.filterlighten == "true") { $("#filterlighten").prop('checked',true); } else { $("#filterlighten").prop('checked',false); }}
+	if (settings.filtercustomCSS) {	if (settings.filtercustomCSS) { $("#filtercustomCSS").val(settings.filtercustomCSS); } else { $("#filterlighten").val(""); }}
+	if (settings.settingsIcon) {	if (settings.settingsIcon == "fullwidth") { $("#settingsIcon").prop('checked',true); } else { $("#settingsIcon").prop('checked',false); }}
 }
+
+saveSettings = function() {
+	safari.self.tab.dispatchMessage('setSetting',{name: "centerBar", value: settings.centerBar});
+	safari.self.tab.dispatchMessage('setSetting',{name: "iconSize", value: settings.iconSize});
+	safari.self.tab.dispatchMessage('setSetting',{name: "roundIcons", value: settings.roundIcons});
+	safari.self.tab.dispatchMessage('setSetting',{name: "filterdropshadow", value: settings.filterdropshadow});
+	safari.self.tab.dispatchMessage('setSetting',{name: "filtergrayscale", value: settings.filtergrayscale});
+	safari.self.tab.dispatchMessage('setSetting',{name: "filterlighten", value: settings.filterlighten});
+	safari.self.tab.dispatchMessage('setSetting',{name: "filtercustomCSS", value: settings.filtercustomCSS});
+	safari.self.tab.dispatchMessage('setSetting',{name: "settingsIcon", value: settings.settingsIcon});
+}
+
 
 renderLinkHtml = function(l){
 	//Additional logic for separators, labels and children will go here.
 	if (l) {
 	if (l.type == "icon") {
 		if (l.label) { var checked = "checked" } else { var checked = "" }
-		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\" data-label=\""+l.label+"\"><img title='Click to choose image' class=\"normal\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Delete' class='icondelete'>&#9587;</span><label class='iconlabel'><input type='checkbox' "+checked+"> Show text label</label></p>";
+		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\" data-label=\""+l.label+"\"><img title='Click to choose image' class=\""+settings.iconSize+" "+settings.roundIcons+"\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Delete' class='icondelete'>&#9587;</span><label class='iconlabel'><input type='checkbox' "+checked+"> Show text label</label></p>";
 	} else if (l.type == "separator") {
 		return 	"<hr>";
 	}
@@ -54,10 +71,10 @@ iconLookup = function(link) {
 	}).responseJSON;
 	
 	$.each(result.icons, function(i, itm) {
-		retval += "<img class='favicon "+settings["iconSize"]+"'  src='" + itm.url + "'>";
+		retval += "<img class='favicon "+settings.iconSize+" "+settings.roundIcons+"'  src='" + itm.url + "'>";
 	});
 	
-	retval += "<img class='favicon "+settings["iconSize"]+"' src='http://www.google.com/s2/favicons?domain_url=" + link + "'>";
+	retval += "<img class='favicon "+settings.iconSize+" "+settings.roundIcons+"' src='http://www.google.com/s2/favicons?domain_url=" + link + "'>";
 
 	return retval; 
 }
@@ -198,6 +215,38 @@ $(document).ready(function(){
 	
 	$("#iconContainer").on("click", "img", function(){
 		$("#iconURL").val($(this).attr("src")).change();
+	});
+
+	$("#dlsettings").bind("click", function() {
+		var data = JSON.stringify(settings);
+		var a = document.getElementById("settingsdl");
+		var file = new Blob([data], {type: 'text/plain'});
+		a.href = URL.createObjectURL(file);
+		a.download = "faviconbar.backup";
+		a.click();
+	});
+	
+	$("#ulsettings").bind("change", function(event) {
+		if (event.target.files.length > 0) {
+		if (confirm("This will replace all settings and links in your bar\ncontinue?")) {
+	    	reader = new FileReader();
+		    reader.onload = function() {
+	        	var newvars = JSON.parse(this.result);
+	        	console.log(newvars);	
+	        	console.log(newvars.settings);
+				settings = newvars;
+				updateSettings();
+				var msg = {
+					name: 'returnLinks',
+					message: JSON.stringify(newvars.links)
+				}
+				messageHandler(msg);
+				saveLinks();
+				saveSettings();
+	    	};
+		    reader.readAsText(event.target.files[0]);	
+	    }
+	    }
 	});
 	
 	$("#btnsave").bind("click", function() {
