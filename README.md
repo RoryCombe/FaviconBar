@@ -1,7 +1,7 @@
 # FaviconBar
 A favicon based favourites bar for Safari
 
-![](img/screenshot3.png)
+![](img/screenshot5.png)
 
 ##Installation
 
@@ -12,21 +12,12 @@ A favicon based favourites bar for Safari
 
 ##Configuration
 
-In the extension's settings (Safari > Preferences > Extensions > Favicon Bar) insert a list of links separated with semi-colons (;)
-
-For example:
-
-```
-https://github.com/;
-https://trello.com/;
-https://sidefield.com;
-https://www.reddit.com/r/all;
-https://www.youtube.com/;
-http://xkcd.com/;
-```
+To add icons to the bar, simply drag a link from a web page or from the address bar
+For simple changes, right-click on an icon, or drag and drop to reorder
+To fully customize your bar, view the complete settings by clicking on the gear icon (&#x2699;)
 
 ##Contributing
-I am actively looking for coders to help with the maintenance, upkeep and further development of this extension. If you're interested please reach out on Twitter [@umfana](https://twitter.com/umfana).
+I am actively looking for coders to help with the maintenance, upkeep and further development of this extension. If you're interested please reach out on Twitter [@rorycombe](https://twitter.com/rorycombe).
 
 ##Support or feature requests
 Please [create an issue](https://github.com/umfana/FaviconBar/issues)

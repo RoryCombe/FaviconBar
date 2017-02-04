@@ -21,6 +21,11 @@ messageHandler = function(msg) {
 updateSettings = function() {
 	if (settings["iconSize"]) {	$("p.iconrow img").removeClass("small normal large 0").addClass(settings["iconSize"]);$("#iconSize").val(settings["iconSize"]);}
 	if (settings["centerBar"]) {	if (settings["centerBar"] == "center") { $("#centerBar").prop('checked',true); } else { $("#centerBar").prop('checked',false); }}
+	if (settings["roundIcons"]) {	if (settings["roundIcons"] == "round") { $("#roundIcons").prop('checked',true); } else { $("#roundIcons").prop('checked',false); }}
+	if (settings["filterdropshadow"]) {	if (settings["filterdropshadow"] == "true") { $("#filterdropshadow").prop('checked',true); } else { $("#filterdropshadow").prop('checked',false); }}
+	if (settings["filtergrayscale"]) {	if (settings["filtergrayscale"] == "true") { $("#filtergrayscale").prop('checked',true); } else { $("#filtergrayscale").prop('checked',false); }}
+	if (settings["filterlighten"]) {	if (settings["filterlighten"] == "true") { $("#filterlighten").prop('checked',true); } else { $("#filterlighten").prop('checked',false); }}
+	if (settings["filtercustomCSS"]) {	if (settings["filtercustomCSS"]) { $("#filtercustomCSS").val(settings["filtercustomCSS"]); } else { $("#filterlighten").val(""); }}
 	if (settings["settingsIcon"]) {	if (settings["settingsIcon"] == "fullwidth") { $("#settingsIcon").prop('checked',true); } else { $("#settingsIcon").prop('checked',false); }}
 }
 
@@ -28,7 +33,8 @@ renderLinkHtml = function(l){
 	//Additional logic for separators, labels and children will go here.
 	if (l) {
 	if (l.type == "icon") {
-		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\"><img title='Click to choose image' class=\"normal\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Delete' class='icondelete'>&#9587;</span></p>";
+		if (l.label) { var checked = "checked" } else { var checked = "" }
+		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\" data-label=\""+l.label+"\"><img title='Click to choose image' class=\"normal\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Delete' class='icondelete'>&#9587;</span><label class='iconlabel'><input type='checkbox' "+checked+"> Show text label</label></p>";
 	} else if (l.type == "separator") {
 		return 	"<hr>";
 	}
@@ -65,7 +71,7 @@ saveLinks = function() {
 	    	"title": $(val).data("title"),
 	    	"link": $(val).data("url"),
 	    	"icon": $(val).data("icon"),
-	    	"label": false,
+	    	"label": $(val).data("label"),
 	    	"type": "icon",
 	    	"children": null
 		});
@@ -113,6 +119,16 @@ finishBinds = function() {
 		saveLinks();
 	}	
 	});
+	
+	$("[type=checkbox]",".iconrow").change(function () {
+		if (this.checked) {
+			$(this).parent().parent().data("label",true);
+		} else {
+			$(this).parent().parent().data("label",false);
+		}
+		saveLinks();
+	});
+
 		
 	$(".iconrow > img").bind("click", function() {
 		$("#iconContainer").html("<div class='loader'>Loading...</div>");
@@ -135,23 +151,34 @@ $(document).ready(function(){
 	safari.self.tab.dispatchMessage('getSetting', 'centerBar');
 	safari.self.tab.dispatchMessage('getSetting', 'iconSize');
 	safari.self.tab.dispatchMessage('getSetting', 'settingsIcon');
+	safari.self.tab.dispatchMessage('getSetting', 'roundIcons');
+	safari.self.tab.dispatchMessage('getSetting', 'filterdropshadow');
+	safari.self.tab.dispatchMessage('getSetting', 'filtergrayscale');
+	safari.self.tab.dispatchMessage('getSetting', 'filterlighten');
+	safari.self.tab.dispatchMessage('getSetting', 'filtercustomCSS');
 	safari.self.tab.dispatchMessage('getLinks', true);
 
-	$("#centerBar").change(function () {
-		var val = "0";
-		if (this.checked) { val = "center"; } 
+	$("[type=checkbox]",".settingrow").change(function () {
+		if (this.checked) { 
+			if ((this.value) != "on") {
+				val = this.value;
+			} else {
+				val = "true";
+			}
+		} else {
+			val = "0";
+		}
 		var setting = {
-			name: "centerBar",
+			name: this.id,
 			value: val
 		}
 		safari.self.tab.dispatchMessage('setSetting',setting);
 	});
 
-	$("#settingsIcon").change(function () {
-		var val = "0";
-		if (this.checked) { val = "fullwidth"; } 
+	$("#filtercustomCSS").blur(function () {
+		val = $(this).val();
 		var setting = {
-			name: "settingsIcon",
+			name: this.id,
 			value: val
 		}
 		safari.self.tab.dispatchMessage('setSetting',setting);

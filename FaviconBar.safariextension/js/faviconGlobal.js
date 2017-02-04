@@ -41,7 +41,10 @@ openHandler = function(event) {
 }
 
 initBar = function(bar) {
-	$(bar).html(barData).removeClass("small normal large center fullwidth 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon);
+	filter = buildFilter();
+	$(bar).html(barData).removeClass("small normal large center fullwidth round 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons);
+	$("img",bar).attr("style",filter);
+
 	if (safari.extension.settings.settingsIcon == "fullwidth") {
 			$("#settings",$(bar).parent()).hide();
 	} else {
@@ -50,14 +53,29 @@ initBar = function(bar) {
 }
 
 restyleBars = function() {
+	filter = buildFilter();
 	for (var i=0;i<safari.extension.bars.length;++i) {
-		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center fullwidth 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon);
+		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center fullwidth round 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons);
+		$("#linkBar > img",safari.extension.bars[i].contentWindow.document).attr("style",filter);
+		
 		if (safari.extension.settings.settingsIcon == "fullwidth") {
 			$("#settings",safari.extension.bars[i].contentWindow.document).hide();
 		} else {
 			$("#settings",safari.extension.bars[i].contentWindow.document).show();		
 		}
 	}
+}
+
+buildFilter = function() {
+	var filter = "filter: ";
+	if (safari.extension.settings.filtergrayscale == "true") { filter+="grayscale(100%) "; }
+	if (safari.extension.settings.filterdropshadow == "true") { filter+="drop-shadow(1px 1px 1px gray) "; }
+	if (safari.extension.settings.filterlighten == "true") { filter+="contrast(50%) brightness(150%) "; }
+	filter+=";"
+	if (safari.extension.settings.filtercustomCSS) {
+		filter+=safari.extension.settings.filtercustomCSS;
+	}
+	return filter;
 }
 
 messageHandler = function(msg) {
@@ -107,16 +125,18 @@ renderLinks = function(){
 
 renderLinkHtml = function(l){
 	//Additional logic for separators, labels and children will go here.
-
-if (l) {
-	if (l.type == "icon") {
-		return 	"<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
-	} else if (l.type == "separator") {
-		return 	"<hr>";
+	var retval = "";
+	if (l) {
+		if (l.type == "icon") {
+			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+			if (l.label) {
+				retval += "<label class='iconlabel'>"+l.title+"</label>";
+			}
+		} else if (l.type == "separator") {
+			retval = "<hr>";
+		}
 	}
-	} else {
-	return "";
-	}
+	return retval;
 }
 
 saveLinks = function(barObject) {
@@ -128,7 +148,7 @@ saveLinks = function(barObject) {
 	    	"title": $(val).data("title"),
 	    	"link": $(val).data("url"),
 	    	"icon": $(val).attr("src"),
-	    	"label": false,
+	    	"label": $(val).data("label"),
 	    	"type": "icon",
 	    	"children": null
 		});
@@ -162,16 +182,15 @@ getNameFromLink = function(cURL){
 }
 
 settingsChanged = function(event){
-	if ((event.key == "iconSize") || (event.key == "centerBar") || (event.key == "settingsIcon")) {
+	if(event.key == "settingsCheckbox") {
+		launchSettings();
+	} else {
 		restyleBars();
 		var setting = {
 			name: event.key,
 			value: event.newValue
 		}
         safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnSetting', setting);
-	}
-	else if(event.key == "settingsCheckbox") {
-		launchSettings();
 	}
 }
 
@@ -279,14 +298,14 @@ onBarDrop = function(event) {
 }
 
 onBarMousedown = function(event) {
-	if(event.target.nodeName == "IMG") {
+	if((event.target.nodeName == "IMG") || (event.target.nodeName == "LABEL")) {
 		$(event.target).addClass("hover");
 	}
 	return true;
 }
 
 onBarMouseup = function(event) {
-	if(event.target.nodeName == "IMG") {
+	if((event.target.nodeName == "IMG") || (event.target.nodeName == "LABEL")) {
 		$(event.target).removeClass("hover");
 	}
 	return true;
@@ -303,6 +322,16 @@ clickHandler = function(event) {
 		} else if (event.button == 0) {
 			launch($(event.target).data("url"));
 		}
+	} else if (event.target.nodeName == "LABEL") {
+		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
+			createMenu(event);
+		} else if ((event.button == 1) || ((event.metaKey) && (event.button == 0))) {
+			launch($(event.target).prev().data("url"),"tab");
+		} else if ((event.button == 0) && (event.altKey)) {
+			launch($(event.target).prev().data("url"),"win");
+		} else if (event.button == 0) {
+			launch($(event.target).prev().data("url"));
+		}
 	}
 	event.preventDefault();
 }
@@ -311,11 +340,18 @@ createMenu = function(event) {
 
 	var dd = $("#dropdown",event.target.parentNode.parentNode)[0];
 	var items = new Array();
-	
-	if (event.target.nodeName == "IMG") {
+	var target = event.target;
+	$(target).removeClass("hover");
 
-	items[0] = { text: $(event.target).data("title"), value: 0, default: "default" };
-	items[1] = { text: $(event.target).data("url"), value: 1, disabled: "disabled" };
+	if (event.target.nodeName == "LABEL") {
+		target = $(event.target).prev()[0];
+	}	
+	$(target).removeClass("hover");
+
+	if (target.nodeName == "IMG") {
+
+	items[0] = { text: $(target).data("title"), value: 0, default: "default" };
+	items[1] = { text: $(target).data("url"), value: 1, disabled: "disabled" };
 	items[2] = { text: "──────────────────", value: 9, disabled: "disabled" };
 	items[3] = { text: "Open in New Tab", value: 2 };
 	items[4] = { text: "Open in New Window", value: 3 };
@@ -326,7 +362,7 @@ createMenu = function(event) {
 	items[9] = { text: "Change Icon…", value: 6 };
 	items[10] = { text: "Delete", value: 7 };
 	
-	} else if (event.target.nodeName == "HR") {
+	} else if (target.nodeName == "HR") {
 	items[0] = { text: "Separator", value: 0, default: "default" };
 	items[1] = { text: "──────────────────", value: 9, disabled: "disabled" };
 	items[2] = { text: "Delete", value: 7 };
@@ -353,22 +389,22 @@ createMenu = function(event) {
 			case "0":
 				break;
 			case "2": 
-				launch($(event.target).data("url"),'tab');
+				launch($(target).data("url"),'tab');
 				break;
 			case "3":
-				launch($(event.target).data("url"),'win');
+				launch($(target).data("url"),'win');
 				break;
 			case "4":
-				newtitle = prompt("Title for this link:\n",$(event.target).data("title"));
-				if (newtitle) { $(event.target).data("title", newtitle);
-				barData = $(event.target).parent("#linkBar").html();
+				newtitle = prompt("Title for this link:\n",$(target).data("title"));
+				if (newtitle) { $(target).data("title", newtitle);
+				barData = $(target).parent("#linkBar").html();
 				renderBars();
 				}
 				break;
 			case "5":
-				newtitle = prompt("Address for this link:\n",$(event.target).data("url"));
-				if (newtitle) { $(event.target).data("url", newtitle);
-				barData = $(event.target).parent("#linkBar").html();
+				newtitle = prompt("Address for this link:\n",$(target).data("url"));
+				if (newtitle) { $(target).data("url", newtitle);
+				barData = $(target).parent("#linkBar").html();
 				renderBars();
 				}
 				break;
@@ -376,14 +412,14 @@ createMenu = function(event) {
 				break;
 			case "7":
 				if (confirm("Delete this link?")) {
-					var par = $(event.target).parent("#linkBar");
-					$(event.target).remove();
+					var par = $(target).parent("#linkBar");
+					$(target).remove();
 					barData = $(par).html();
 					renderBars();
 				}
 				break;
 			case "8":
-				addSeparator($(event.target));
+				addSeparator($(target));
 				break;
 		}
 	});

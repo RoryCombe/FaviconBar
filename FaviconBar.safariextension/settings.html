@@ -15,13 +15,19 @@
 				<h2>Settings</h2>
 				<hr/>
 				<div id="settingsContainer">
-				<label class="settingrow"><input id="centerBar" type="checkbox"> Centre the bar</label>
-				<label class="settingrow"><input id="settingsIcon" type="checkbox"> Hide settings icon on the bar</label>
+				<label class="settingrow"><input id="settingsIcon" type="checkbox" value="fullwidth"> Hide settings icon on the bar</label>
+				<hr/>
 				<label class="settingrow">Icon Size <select id="iconSize">
 				<option value="small">Small
 				<option value="normal">Normal
 				<option value="large">Large
 				</select></label>
+				<label class="settingrow"><input id="centerBar" type="checkbox" value="center"> Centre the bar</label>
+				<label class="settingrow"><input id="roundIcons" type="checkbox" value="round"> Round icons</label>
+				<label class="settingrow"><input id="filterdropshadow" type="checkbox"> Drop shadow on icons</label>
+				<label class="settingrow"><input id="filtergrayscale" type="checkbox"> Grayscale icons</label>
+				<label class="settingrow"><input id="filterlighten" type="checkbox"> Lighten icons</label>
+				<label class="settingrow">Custom CSS to apply to icons<br><textarea id="filtercustomCSS" style="width: 100%;height: 50px;"></textarea></label>
 				</div>
 				<h2>Links</h2>
 				<p>Click on an icon or text to edit</p>

@@ -77,8 +77,22 @@ hr {
 	border: solid 1px transparent;
 }
 .iconlink {
+	transition: all 0.2s ease;
 	color: RGBA(0,0,0,0.5);
 	border: solid 1px transparent;
+}
+.iconlink:hover {
+	color: #000;
+}
+.iconlabel {
+	transition: all 0.2s ease;
+	float: right;
+	margin-right: 50px;
+	margin-top: 4px;
+	color: RGBA(0, 0, 0, 0.5);
+}
+.iconlabel:hover {
+	color: #000;
 }
 .icondelete {
 	transition: all 0.2s ease;
