@@ -42,8 +42,8 @@ openHandler = function(event) {
 
 initBar = function(bar) {
 	filter = buildFilter();
-	$(bar).html(barData).removeClass("small normal large center fullwidth round blend 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons+" "+safari.extension.settings.blendMode);
 	$("body",$(bar).parent().parent()).removeClass("blend 0").addClass(safari.extension.settings.blendMode);
+	$(bar).html(barData).removeClass("small normal large center fullwidth round blend 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons+" "+safari.extension.settings.blendMode);
 	$("img",bar).attr("style",filter);
 
 	if (safari.extension.settings.settingsIcon == "fullwidth") {
@@ -56,8 +56,8 @@ initBar = function(bar) {
 restyleBars = function() {
 	filter = buildFilter();
 	for (var i=0;i<safari.extension.bars.length;++i) {
-		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center fullwidth round 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons);
 		$("body",safari.extension.bars[i].contentWindow.document).removeClass("blend 0").addClass(safari.extension.settings.blendMode);
+		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center fullwidth round blend 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons+" "+safari.extension.settings.blendMode);
 		$("#linkBar > img",safari.extension.bars[i].contentWindow.document).attr("style",filter);
 		
 		if (safari.extension.settings.settingsIcon == "fullwidth") {

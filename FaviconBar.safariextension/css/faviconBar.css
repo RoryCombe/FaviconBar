@@ -57,7 +57,7 @@ body.blend {
 	border-radius: 50%;
 }
 
-#linkBar.blend img {
+#linkBar.blend {
 	mix-blend-mode: darken;
 }
 
