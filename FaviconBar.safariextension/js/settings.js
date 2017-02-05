@@ -26,6 +26,7 @@ updateSettings = function() {
 	if (settings.centerBar) {	if (settings.centerBar == "center") { $("#centerBar").prop('checked',true); } else { $("#centerBar").prop('checked',false); }}
 	if (settings.iconSize) {	$("p.iconrow img").removeClass("small normal large 0").addClass(settings.iconSize);$("#iconSize").val(settings.iconSize);}
 	if (settings.roundIcons) {	$("p.iconrow img").removeClass("round 0").addClass(settings.roundIcons);if (settings.roundIcons == "round") { $("#roundIcons").prop('checked',true); } else { $("#roundIcons").prop('checked',false); }}
+	if (settings.blendMode) {	if (settings.blendMode == "blend") { $("#blendMode").prop('checked',true); } else { $("#blendMode").prop('checked',false); }}
 	if (settings.filterdropshadow) {	if (settings.filterdropshadow == "true") { $("#filterdropshadow").prop('checked',true); } else { $("#filterdropshadow").prop('checked',false); }}
 	if (settings.filtergrayscale) {	if (settings.filtergrayscale == "true") { $("#filtergrayscale").prop('checked',true); } else { $("#filtergrayscale").prop('checked',false); }}
 	if (settings.filterlighten) {	if (settings.filterlighten == "true") { $("#filterlighten").prop('checked',true); } else { $("#filterlighten").prop('checked',false); }}
@@ -37,6 +38,7 @@ saveSettings = function() {
 	safari.self.tab.dispatchMessage('setSetting',{name: "centerBar", value: settings.centerBar});
 	safari.self.tab.dispatchMessage('setSetting',{name: "iconSize", value: settings.iconSize});
 	safari.self.tab.dispatchMessage('setSetting',{name: "roundIcons", value: settings.roundIcons});
+	safari.self.tab.dispatchMessage('setSetting',{name: "blendMode", value: settings.blendMode});
 	safari.self.tab.dispatchMessage('setSetting',{name: "filterdropshadow", value: settings.filterdropshadow});
 	safari.self.tab.dispatchMessage('setSetting',{name: "filtergrayscale", value: settings.filtergrayscale});
 	safari.self.tab.dispatchMessage('setSetting',{name: "filterlighten", value: settings.filterlighten});
@@ -168,6 +170,7 @@ $(document).ready(function(){
 	safari.self.tab.dispatchMessage('getSetting', 'iconSize');
 	safari.self.tab.dispatchMessage('getSetting', 'settingsIcon');
 	safari.self.tab.dispatchMessage('getSetting', 'roundIcons');
+	safari.self.tab.dispatchMessage('getSetting', 'blendMode');
 	safari.self.tab.dispatchMessage('getSetting', 'filterdropshadow');
 	safari.self.tab.dispatchMessage('getSetting', 'filtergrayscale');
 	safari.self.tab.dispatchMessage('getSetting', 'filterlighten');

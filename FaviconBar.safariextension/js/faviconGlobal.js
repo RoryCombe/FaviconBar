@@ -42,7 +42,8 @@ openHandler = function(event) {
 
 initBar = function(bar) {
 	filter = buildFilter();
-	$(bar).html(barData).removeClass("small normal large center fullwidth round 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons);
+	$(bar).html(barData).removeClass("small normal large center fullwidth round blend 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons+" "+safari.extension.settings.blendMode);
+	$("body",$(bar).parent().parent()).removeClass("blend 0").addClass(safari.extension.settings.blendMode);
 	$("img",bar).attr("style",filter);
 
 	if (safari.extension.settings.settingsIcon == "fullwidth") {
@@ -56,6 +57,7 @@ restyleBars = function() {
 	filter = buildFilter();
 	for (var i=0;i<safari.extension.bars.length;++i) {
 		$("#linkBar",safari.extension.bars[i].contentWindow.document).removeClass("small normal large center fullwidth round 0").addClass(safari.extension.settings.iconSize+" "+safari.extension.settings.centerBar+" "+safari.extension.settings.settingsIcon+" "+safari.extension.settings.roundIcons);
+		$("body",safari.extension.bars[i].contentWindow.document).removeClass("blend 0").addClass(safari.extension.settings.blendMode);
 		$("#linkBar > img",safari.extension.bars[i].contentWindow.document).attr("style",filter);
 		
 		if (safari.extension.settings.settingsIcon == "fullwidth") {
@@ -182,8 +184,8 @@ renderLinkHtml = function(l){
 	//Additional logic for separators, labels and children will go here.
 	var retval = "";
 	if (l) {
-		if (l.type == "icon") {
-			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" src=\""+l.icon+"\">";
+		if ((l.type == "icon") || (l.type == "folder")) {
+			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" data-type=\""+l.type+"\" data-children=\""+l.children+"\" src=\""+l.icon+"\">";
 			if (l.label) {
 				retval += "<label class='iconlabel'>"+l.title+"</label>";
 			}
@@ -204,7 +206,7 @@ saveLinks = function(barObject) {
 	    	"link": $(val).data("url"),
 	    	"icon": $(val).attr("src"),
 	    	"label": $(val).data("label"),
-	    	"type": "icon",
+	    	"type": $(val).data("type"),
 	    	"children": null
 		});
 		} else if ($(val).prop("tagName") == "HR") {
@@ -274,6 +276,24 @@ addLink = function(l,event){
 	}
 }
 
+addFolder = function(event){
+	    link = {
+	    	"title": "Folder",
+	    	"link": "",
+	    	"icon": "http://icons.veryicon.com/ico/Folder/Flat%20Folder/Close%20Folder.ico",
+	    	"label": false,
+	    	"type": "folder",
+	    	"children": null
+	    };
+	    if (event.target.nodeName == "IMG") {
+    	    $(renderLinkHtml(link)).insertBefore(event.target);
+    	    barData = $(event.target).parent().html();
+    	    } else {
+			barData += renderLinkHtml(link);
+		}
+		renderBars();
+}
+
 addSeparator = function(target) {
 	$("<hr>").insertAfter(target);
     barData = $(target).parent().html();
@@ -332,8 +352,34 @@ onBarDrop = function(event) {
 	if(!event.dataTransfer){
 		return false;
 	}
-	
+
 	$(event.target).removeClass("drag");
+
+if ((event.target.nodeName == "IMG") && (event.dataTransfer.files.length > 0)) {
+
+	    event.stopPropagation();
+		event.preventDefault();
+        
+        file = event.dataTransfer.files[0];
+        if (file.size > 102400) {
+        	alert("This icon is too large.\n\nPlease limit icon file size to less than 100KB");
+        } else {
+            var fileReader = new FileReader();
+                fileReader.onload = (function(file) {
+                   return function(e) { 
+                     $(event.target).attr("src",e.target.result); 
+                     var par = $(event.target).parent("#linkBar");
+					 barData = $(par).html();
+					 renderBars();
+                   }; 
+                })(file);
+            fileReader.readAsDataURL(file);
+		}
+} else {
+	
+	if (event.dataTransfer.files.length > 0) {	
+		return false;
+	}
 	
 	if (event.dataTransfer.getData("Text") == "dragItem") { 
 		if (event.target == $("#dragItem",event.target.parentNode)[0]) {
@@ -348,8 +394,9 @@ onBarDrop = function(event) {
 	
 	}
 
-
+}
 	return true;
+	
 }
 
 onBarMousedown = function(event) {
@@ -366,7 +413,23 @@ onBarMouseup = function(event) {
 	return true;
 }
 
+loadFolder = function(event) {
+
+	var retval = "<label>"+$(event.target).data("title")+"</label>";
+	links = $(event.target).data("children");
+	if (links) {
+		links.map(function(l){
+			retval += renderLinkHtml(l);
+		});
+	}
+
+	$("#folderBar",$(event.target).parent().parent()).html(retval);
+	$("#folder",$(event.target).parent().parent()).show();
+				
+}
+
 clickHandler = function(event) {
+	
 	if ((event.target.nodeName == "IMG") || (event.target.nodeName == "HR")) {
 		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
 			createMenu(event);
@@ -375,7 +438,11 @@ clickHandler = function(event) {
 		} else if ((event.button == 0) && (event.altKey)) {
 			launch($(event.target).data("url"),"win");
 		} else if (event.button == 0) {
-			launch($(event.target).data("url"));
+			if($(event.target).data("type") == "folder") {
+				loadFolder(event);
+			} else {
+				launch($(event.target).data("url"));
+			}
 		}
 	} else if (event.target.nodeName == "LABEL") {
 		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
@@ -387,10 +454,12 @@ clickHandler = function(event) {
 		} else if (event.button == 0) {
 			launch($(event.target).prev().data("url"));
 		}
-	} else if (event.target.nodeName == "DIV") {
+	} else if (event.target.id == "linkBar") {
 		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
 			createMenu(event);
 		}
+	} else if (event.target.id == "folder") {
+		$(event.target).hide();
 	}
 	
 	event.preventDefault();
@@ -427,10 +496,11 @@ createMenu = function(event) {
 	items[1] = { text: "──────────────────", value: 9, disabled: "disabled" };
 	items[2] = { text: "Delete", value: 7 };
 	
-	} else if (target.nodeName == "DIV") {
+	} else if (target.id == "linkBar") {
 	items[0] = { text: "FaviconBar", value: 0, default: "default" };
 	items[1] = { text: "──────────────────", value: 9, disabled: "disabled" };
 	items[2] = { text: "Add Link...", value: 11 };	
+//	items[3] = { text: "Add Folder", value: 12 };	
 	items[3] = { text: "Settings", value: 6 };	
 	}
 	
@@ -477,7 +547,7 @@ createMenu = function(event) {
 					launchSettings($(target).data("icon"));
 				break;
 			case "7":
-				if (confirm("Delete this link?")) {
+				if (confirm("Delete "+$(target).data("title")+"?")) {
 					var par = $(target).parent("#linkBar");
 					$(target).remove();
 					barData = $(par).html();
@@ -492,6 +562,10 @@ createMenu = function(event) {
 				if (link) {
 					addLink(link,event);
 				}
+				break;
+			case "12":
+				addFolder(event);			
+				break;
 		}
 	});
 		

@@ -3,6 +3,41 @@ body {
 	padding: 0px;
 }
 
+body.blend {
+	background-color: #dddddd;
+}
+
+#folder {
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 30px;
+	margin: 0px;
+	padding: 0px;
+	background-color: RGBA(255,255,255,.75);
+	text-align: center;
+}
+
+#folderBar {
+	display: inline-block;
+	position: relative;
+	top: 2px;
+	height: 26px;
+	border-radius: 7px;
+	margin: 0px;
+	padding: 0px;
+	background-color: RGBA(0, 0, 0, .65);
+	padding-left: 10px;
+	padding-right: 10px;
+}
+#folderBar label {
+	margin-top: 6px;
+	display: inline-block;
+	vertical-align: top;
+	font-weight: lighter;
+	color: RGBA(255,255,255,.75);
+}
+
 #linkBar {
 	position: absolute;
 	width: calc(100% - 30px);
@@ -20,6 +55,10 @@ body {
 
 #linkBar.round img {
 	border-radius: 50%;
+}
+
+#linkBar.blend img {
+	mix-blend-mode: darken;
 }
 
 #linkBar hr {
