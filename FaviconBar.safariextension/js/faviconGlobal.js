@@ -100,8 +100,10 @@ messageHandler = function(msg) {
 renderLinks = function(){
 	var links = localStorage.getItem('links');
 	if (links) {
+		//Load saved links
 		links = JSON.parse(links);	
-	} else {
+	} else if (safari.extension.settings.links) {
+		//upgrades from old version of FaviconBar and converts to new format
 	    links = safari.extension.settings.links.split(";").map(function(l){
 	    	if (l && l.length > 0){
 	    		return {
@@ -114,6 +116,59 @@ renderLinks = function(){
         		}
 	    	}	
     	});
+    	safari.extension.settings.links = null;
+	} else {
+		//New install of FaviconBar - default links
+		links = [
+			{
+			"title": "Apple",
+			"link": "https://www.apple.com",
+			"icon": "http://www.apple.com/favicon.ico",
+			"label": false,
+			"type": "icon",
+			"children": null
+			},
+			{
+			"title": "The New York Times",
+			"link": "https://www.nytimes.com",
+			"icon": "https://www.nytimes.com/apple-touch-icon.png",
+			"label": false,
+			"type": "icon",
+			"children": null
+			},
+			{
+			"title": "Wikipedia",
+			"link": "https://www.wikipedia.org",
+			"icon": "https://www.wikipedia.org/static/apple-touch/wikipedia.png",
+			"label": false,
+			"type": "icon",
+			"children": null
+			},
+			{
+			"title": "reddit",
+			"link": "https://www.reddit.com/r/all",
+			"icon": "https://www.reddit.com/favicon.ico",
+			"label": false,
+			"type": "icon",
+			"children": null
+			},
+			{
+			"title": "twitter",
+			"link": "https://twitter.com",
+			"icon": "https://abs.twimg.com/favicons/favicon.ico",
+			"label": false,
+			"type": "icon",
+			"children": null
+			},
+			{
+			"title": "Sidefield",
+			"link": "https://www.sidefield.com",
+			"icon": "https://sidefield.com/img/favicon.ico",
+			"label": false,
+			"type": "icon",
+			"children": null
+			}
+		]
 	}
 
 	var results = "";
@@ -128,7 +183,7 @@ renderLinkHtml = function(l){
 	var retval = "";
 	if (l) {
 		if (l.type == "icon") {
-			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" src=\""+l.icon+"\" onerror=\"this.src='http://www.google.com/s2/favicons?domain_url=" + l.link + "';\" >";
+			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" src=\""+l.icon+"\">";
 			if (l.label) {
 				retval += "<label class='iconlabel'>"+l.title+"</label>";
 			}
@@ -332,7 +387,12 @@ clickHandler = function(event) {
 		} else if (event.button == 0) {
 			launch($(event.target).prev().data("url"));
 		}
+	} else if (event.target.nodeName == "DIV") {
+		if ((event.button == 2) || ((event.ctrlKey) && (event.button == 0))) {
+			createMenu(event);
+		}
 	}
+	
 	event.preventDefault();
 }
 
@@ -367,6 +427,11 @@ createMenu = function(event) {
 	items[1] = { text: "──────────────────", value: 9, disabled: "disabled" };
 	items[2] = { text: "Delete", value: 7 };
 	
+	} else if (target.nodeName == "DIV") {
+	items[0] = { text: "FaviconBar", value: 0, default: "default" };
+	items[1] = { text: "──────────────────", value: 9, disabled: "disabled" };
+	items[2] = { text: "Add Link...", value: 11 };	
+	items[3] = { text: "Settings", value: 6 };	
 	}
 	
 	$(dd).empty();
@@ -422,6 +487,11 @@ createMenu = function(event) {
 			case "8":
 				addSeparator($(target));
 				break;
+			case "11":
+				var link = prompt("Please enter the full link address\n");
+				if (link) {
+					addLink(link,event);
+				}
 		}
 	});
 		
@@ -449,42 +519,59 @@ launch = function(link,type) {
 }
 
 getFavicon = function(link) {
-
-	result = $.ajax({
-		method: "GET",
-		dataType: "json",
-		url: "https://icons.better-idea.org/allicons.json?url="+link, 
-		async: false
-	}).responseJSON;
+	if (navigator.onLine) {
+		var aj = $.ajax({
+			method: "GET",
+			dataType: "json",
+			url: "https://icons.better-idea.org/allicons.json?url="+link, 
+			async: false,
+			timeout: 1000,
+			error: function() {
+				return false;
+			}
+		});
+	}
 	
-	favicon = result.icons.filter(function (fv) {
-	  	return fv.width > 64 &&
-	  	fv.width < 129;
-  	});
+	if (aj) {	
+		if ((aj.readyState == 4) && (aj.status == 200)) { 
+			result = aj.responseJSON;
 
-  	if (favicon.length == 0) {
-  		favicon = result.icons.filter(function (fv) {
-	  		return fv.width > 16 &&
-	  		fv.width < 65;
-  		});  
-  	}
+			if (result.icons) {
+				var favicon = result.icons.filter(function (fv) {
+				  	return fv.width > 64 &&
+				  	fv.width < 129;
+			  	});
+
+			  	if (favicon.length == 0) {
+			  		favicon = result.icons.filter(function (fv) {
+				  		return fv.width > 16 &&
+				  		fv.width < 65;
+			  		});  
+			  	}
   
-	if (favicon.length == 0) {
-		favicon = result.icons.filter(function (fv) {
-	  		return fv.width > 128;
-  		});  
-  	}
+				if (favicon.length == 0) {
+					favicon = result.icons.filter(function (fv) {
+				  		return fv.width > 128;
+			  		});  
+			  	}
+	  
+		  		if (favicon.length == 0) {
+		  			favicon = result.icons.filter(function (fv) {
+				  		return fv.width <= 16;
+		  			});  
+		  		}
+	  		}
+	  	}
+	}
   
-  	if (favicon.length == 0) {
-  		favicon = result.icons.filter(function (fv) {
-	  		return fv.width <= 16;
-  		});  
-  	}
-  
-	if (favicon.length > 0) {
-		return favicon[0].url;
+	if (favicon) {
+		if (favicon.length > 0) {
+			return favicon[0].url;
+		} else {
+			return "http://www.google.com/s2/favicons?domain_url="+link;
+		}
 	} else {
-		return null;
+		return "http://www.google.com/s2/favicons?domain_url="+link;
 	} 
 }
 

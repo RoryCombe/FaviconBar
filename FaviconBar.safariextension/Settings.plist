@@ -4,42 +4,6 @@
 <array>
 	<dict>
 		<key>DefaultValue</key>
-		<string>https://www.apple.com; http://www.nytimes.com; https://www.wikipedia.org; https://www.reddit.com/r/all; https://sidefield.com;</string>
-		<key>Key</key>
-		<string>links</string>
-		<key>Title</key>
-		<string>Links</string>
-		<key>Type</key>
-		<string>Hidden</string>
-	</dict>
-	<dict>
-		<key>DefaultValue</key>
-		<string>normal</string>
-		<key>FalseValue</key>
-		<string>false</string>
-		<key>Key</key>
-		<string>iconSize</string>
-		<key>Title</key>
-		<string>Icon Size</string>
-		<key>Titles</key>
-		<array>
-			<string>Small</string>
-			<string>Normal</string>
-			<string>Large</string>
-		</array>
-		<key>TrueValue</key>
-		<string>true</string>
-		<key>Type</key>
-		<string>Hidden</string>
-		<key>Values</key>
-		<array>
-			<string>small</string>
-			<string>normal</string>
-			<string>large</string>
-		</array>
-	</dict>
-	<dict>
-		<key>DefaultValue</key>
 		<string>center</string>
 		<key>FalseValue</key>
 		<string>0</string>
@@ -79,6 +43,12 @@
 		<string></string>
 		<key>Type</key>
 		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>normal</string>
+		<key>Key</key>
+		<string>iconSize</string>
 	</dict>
 </array>
 </plist>
