@@ -2,26 +2,51 @@
 <html>
 	<head>
 		<title>Favicon Bar Settings</title>
-		<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" charset="utf-8">
-		<link rel="stylesheet" href="settings.css" type="text/css" charset="utf-8">
+		<link rel="stylesheet" href="css/settings.css" type="text/css" charset="utf-8">
+		<script src="js/jquery.min.js"></script>
+		<script src="js/settings.js"></script>
 	</head>
-	<body>		
+	<body>
 		<div class="container">
-			<div class="row">
-				<div class="col-md-3">
-					<div class="header clearfix">
-						<h3 class="text-muted"><img src="icon-32.png"> FaviconBar</h3>
-					</div>
-				</div>
-				<div class="col-md-9">
-					<h2>Settings</h2>
-					<hr/>
-					<div id="settingsContainer"></div>
-				</div>
+			<div class="header">
+				<h3><img src="icon-32.png"> FaviconBar</h3>
 			</div>
+			<div class="content">
+				<h2>Settings</h2>
+				<hr/>
+				<div id="settingsContainer">
+				<label class="settingrow"><a href="" style="display: none;" id="settingsdl">download</a>
+				Save settings and links to a file <button id="dlsettings">Download</button></label>
+				<label class="settingrow">Load settings and links from a file <button onclick="document.getElementById('ulsettings').click();">Choose File</button><input style="display: none" type="file" id="ulsettings" />
+				</label>
+				<label class="settingrow"><input id="settingsIcon" type="checkbox" value="fullwidth"> Hide settings icon on the bar (you can still access this page from Safari preferences)</label>
+				<hr/>
+				<label class="settingrow">Icon Size <select id="iconSize">
+				<option value="small">Small
+				<option value="normal">Normal
+				<option value="large">Large
+				</select></label>
+				<label class="settingrow"><input id="centerBar" type="checkbox" value="center"> Centre the bar</label>
+				<label class="settingrow"><input id="roundIcons" type="checkbox" value="round"> Round icons</label>
+				<label class="settingrow"><input id="blendMode" type="checkbox" value="blend"> Blend into background (makes some icons look better)</label>
+				<label class="settingrow"><input id="filterdropshadow" type="checkbox"> Drop shadow on icons</label>
+				<label class="settingrow"><input id="filtergrayscale" type="checkbox"> Grayscale icons</label>
+				<label class="settingrow"><input id="filterlighten" type="checkbox"> Lighten icons</label>
+				<label class="settingrow">Custom CSS to apply to icons<br><textarea id="filtercustomCSS" style="width: 100%;height: 50px;"></textarea></label>
+				</div>
+				<h2>Links</h2>
+				<p>Click on an icon or text to edit</p>
+				<hr/>
+				<div id="linksContainer"></div>
+			</div>
+		</div>		
+		<div id="popOver"><div>
+		<div class="header">
+		<h2>Choose an icon for <span id="lnktitle"></span></h3>
 		</div>
-		<script src="js/react.js"></script>
-		<script src="js/JSXTransformer.js"></script>
-		<script type="text/jsx" src="settings.js"></script>
+		<div id="iconContainer"></div>
+		<div class="bottom"><span>Favicon address <span>(hint: you can edit this, or drag a picture here)</span></span>
+		<input id="iconURL" type=text>
+		<div class="header"><button id="btncancel">Cancel</button> <button id="btnsave">Save</button></div></div></div>
 	</body>
 </html>

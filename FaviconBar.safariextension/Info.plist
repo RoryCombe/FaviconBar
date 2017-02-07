@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Rory Combe</string>
 	<key>Builder Version</key>
-	<string>10600.8.9</string>
+	<string>12603.1.20.1</string>
 	<key>CFBundleDisplayName</key>
 	<string>Favicon Bar</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.3</string>
 	<key>CFBundleVersion</key>
-	<string>1.3</string>
+	<string>022017</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Bars</key>
@@ -30,28 +30,14 @@
 			</dict>
 		</array>
 		<key>Database Quota</key>
-		<real>5242880</real>
+		<integer>10485760</integer>
 		<key>Global Page</key>
-		<string>faviconBar.html</string>
-	</dict>
-	<key>Content</key>
-	<dict>
-		<key>Scripts</key>
-		<dict>
-			<key>Start</key>
-			<array>
-				<string>faviconBar.js</string>
-			</array>
-		</dict>
-		<key>Stylesheets</key>
-		<array>
-			<string>faviconBar.css</string>
-		</array>
+		<string>faviconGlobal.html</string>
 	</dict>
 	<key>Description</key>
 	<string>A favicon based favourites bar</string>
 	<key>DeveloperIdentifier</key>
-	<string>FHBT333DVL</string>
+	<string>W4CTZ3E3F7</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>

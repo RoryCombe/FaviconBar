@@ -2,17 +2,20 @@
 <html>
 	<head>
 		<title>Favicon Bar</title>
-		<link rel="stylesheet" href="faviconBar.css" type="text/css" charset="utf-8">
-		<script src="faviconBar.js" type="text/javascript" charset="utf-8"></script>		
+		<link rel="stylesheet" href="css/faviconBar.css" type="text/css" charset="utf-8">
+		<script>
+			function init() {
+				if (safari.extension.globalPage.contentWindow) {
+					safari.extension.globalPage.contentWindow.renderBars();
+				}
+			}
+		</script>
 	</head>
-	<body 
-		onload="FaviconBar.onLoad();"
-		ondragenter="FaviconBar.onBarDragenter(this, event)"
-		ondragover="FaviconBar.onBarDragover(this, event)"
-		ondrop="FaviconBar.onBarDrop(this, event)">		
-		<table id="linksTable">
-			<tr id="linksTableRow">				
-			</tr>
-		</table>
+	<body onload="init();">		
+		<div id="linkBar">
+		</div>
+		<span id="settings">&#x2699;</span>
+		<select id="dropdown"></select>
+		<div id="folder"><span id="folderBar"></span></div>
 	</body>
 </html>

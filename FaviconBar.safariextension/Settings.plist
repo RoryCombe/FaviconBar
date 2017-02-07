@@ -4,37 +4,51 @@
 <array>
 	<dict>
 		<key>DefaultValue</key>
-		<string>https://www.apple.com; http://www.nytimes.com; https://www.wikipedia.org; https://www.reddit.com/r/all; https://sidefield.com;</string>
-		<key>Key</key>
-		<string>links</string>
-		<key>Title</key>
-		<string>Links</string>
-		<key>Type</key>
-		<string>TextField</string>
-	</dict>
-	<dict>
-		<key>DefaultValue</key>
-		<true/>
+		<string>center</string>
+		<key>FalseValue</key>
+		<string>0</string>
 		<key>Key</key>
 		<string>centerBar</string>
 		<key>Title</key>
-		<string>Centre the bar</string>
+		<string>Centre the bar                                                 </string>
+		<key>TrueValue</key>
+		<string>center</string>
 		<key>Type</key>
-		<string>CheckBox</string>
+		<string>Hidden</string>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>
-		<false/>
+		<string>0</string>
+		<key>FalseValue</key>
+		<string>0</string>
+		<key>Key</key>
+		<string>settingsIcon</string>
+		<key>Title</key>
+		<string>Hide settings icon on the bar                         </string>
+		<key>TrueValue</key>
+		<string>fullwidth</string>
+		<key>Type</key>
+		<string>Hidden</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>0</string>
 		<key>FalseValue</key>
 		<string></string>
 		<key>Key</key>
 		<string>settingsCheckbox</string>
 		<key>Title</key>
-		<string>Click this checkbox to access the settings</string>
+		<string>Click this checkbox to access more settings</string>
 		<key>TrueValue</key>
 		<string></string>
 		<key>Type</key>
 		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<string>normal</string>
+		<key>Key</key>
+		<string>iconSize</string>
 	</dict>
 </array>
 </plist>
