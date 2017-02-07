@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Rory Combe</string>
 	<key>Builder Version</key>
-	<string>12603.1.20.1</string>
+	<string>12602.4.8</string>
 	<key>CFBundleDisplayName</key>
 	<string>Favicon Bar</string>
 	<key>CFBundleIdentifier</key>
@@ -37,7 +37,7 @@
 	<key>Description</key>
 	<string>A favicon based favourites bar</string>
 	<key>DeveloperIdentifier</key>
-	<string>W4CTZ3E3F7</string>
+	<string>FHBT333DVL</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>
@@ -51,8 +51,8 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>https://raw.githubusercontent.com/umfana/FaviconBar/master/manifest.plist</string>
+	<string>https://raw.githubusercontent.com/RoryCombe/FaviconBar/master/manifest.plist</string>
 	<key>Website</key>
-	<string>https://github.com/umfana/FaviconBar</string>
+	<string>https://github.com/RoryCombe/FaviconBar</string>
 </dict>
 </plist>
