@@ -4,6 +4,7 @@ $(document).ready(function() {
 	safari.application.addEventListener("message", messageHandler, false);
 	safari.application.addEventListener("open", openHandler, true);
 	barData = renderLinks();
+	console.log("renderBars called from document.ready");
 	renderBars();
 });
 
@@ -26,6 +27,7 @@ renderBars = function() {
 		}
 		initBar($("#linkBar",safari.extension.bars[i].contentWindow.document));
 		if (i==0) {
+		console.log("savelinks called from renderBars");
 			saveLinks($("#linkBar",safari.extension.bars[0].contentWindow.document));
 		}
 	}
@@ -91,8 +93,10 @@ messageHandler = function(msg) {
     } else if (msg.name == 'setSetting') {
         safari.extension.settings[msg.message.name] = msg.message.value;
     } else if (msg.name == 'updateBars') {
+    	console.log("setting links due to updateBars");
     	localStorage.setItem('links', JSON.stringify(msg.message));
     	barData = renderLinks();
+    	console.log("renderBars called from updateBars");
     	renderBars();
     } else if (msg.name == 'getLinks') {
     	safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnLinks',localStorage.getItem('links'));
@@ -100,12 +104,16 @@ messageHandler = function(msg) {
 }
 
 renderLinks = function(){
+console.log("render links");
 	var links = localStorage.getItem('links');
 	if (links) {
+	console.log("loading localStorage");
+	console.log(links);
 		//Load saved links
 		links = JSON.parse(links);	
-	} else if (safari.extension.settings.links) {
+	} else if ((safari.extension.settings.links) && (safari.extension.settings.links.length > 1)) {
 		//upgrades from old version of FaviconBar and converts to new format
+		console.log("old version upgrade links");
 	    links = safari.extension.settings.links.split(";").map(function(l){
 	    	if (l && l.length > 0){
 	    		return {
@@ -120,6 +128,7 @@ renderLinks = function(){
     	});
     	safari.extension.settings.links = null;
 	} else {
+		console.log("fresh install");
 		//New install of FaviconBar - default links
 		links = [
 			{
@@ -221,6 +230,8 @@ saveLinks = function(barObject) {
 		}
 	});
 	
+    	console.log("setting links due to saveLinks");
+	
 	localStorage.setItem('links', JSON.stringify(links));
 }
 
@@ -272,6 +283,7 @@ addLink = function(l,event){
     	    } else {
 			barData += renderLinkHtml(link);
 		}
+		console.log("renderBars called from addLink");
 		renderBars();
 	}
 }
@@ -291,12 +303,14 @@ addFolder = function(event){
     	    } else {
 			barData += renderLinkHtml(link);
 		}
+		console.log("renderBars called from addFolder");
 		renderBars();
 }
 
 addSeparator = function(target) {
 	$("<hr>").insertAfter(target);
     barData = $(target).parent().html();
+    console.log("renderBars called from addSeparator");
     renderBars();
 }
 
@@ -309,6 +323,7 @@ moveLink = function(event){
     	    $("#dragItem",event.target).remove().appendTo(event.target).removeAttr('id');
     	    barData = $(event.target).html();
 		}
+		console.log("renderBars called from moveLink");
 		renderBars();
 }
 
@@ -370,6 +385,7 @@ if ((event.target.nodeName == "IMG") && (event.dataTransfer.files.length > 0)) {
                      $(event.target).attr("src",e.target.result); 
                      var par = $(event.target).parent("#linkBar");
 					 barData = $(par).html();
+					 console.log("renderBars called from onBarDrop");
 					 renderBars();
                    }; 
                 })(file);
@@ -519,7 +535,7 @@ createMenu = function(event) {
 	
 
 	$(dd).unbind("change").change(function() {
-
+console.log("dd unbind change called");
 		switch(this.value) {
 			case "0":
 				break;
