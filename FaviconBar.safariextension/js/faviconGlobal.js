@@ -2,9 +2,7 @@ var barData = false;
 
 $(document).ready(function() {
 	safari.application.addEventListener("message", messageHandler, false);
-	safari.application.addEventListener("open", openHandler, true);
 	barData = renderLinks();
-	console.log("renderBars called from document.ready");
 	renderBars();
 });
 
@@ -27,19 +25,9 @@ renderBars = function() {
 		}
 		initBar($("#linkBar",safari.extension.bars[i].contentWindow.document));
 		if (i==0) {
-		console.log("savelinks called from renderBars");
 			saveLinks($("#linkBar",safari.extension.bars[0].contentWindow.document));
 		}
 	}
-}
-
-openHandler = function(event) {
-    if (event.target instanceof SafariBrowserWindow) {
-    	//ugly hack for new window because I can't access the extension bar until after it loads faviconBar.html
-    	//right now added code back into faviconBar.html to init on new window to fix tab dragging bug, so this is redundant
-		//this commenting out, will remove in the future if a better solution doesn't present itself.
-		//setTimeout(renderBars,500);
-    }
 }
 
 initBar = function(bar) {
@@ -93,27 +81,32 @@ messageHandler = function(msg) {
     } else if (msg.name == 'setSetting') {
         safari.extension.settings[msg.message.name] = msg.message.value;
     } else if (msg.name == 'updateBars') {
-    	console.log("setting links due to updateBars");
     	localStorage.setItem('links', JSON.stringify(msg.message));
     	barData = renderLinks();
-    	console.log("renderBars called from updateBars");
     	renderBars();
     } else if (msg.name == 'getLinks') {
     	safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnLinks',localStorage.getItem('links'));
+    } else if (msg.name == 'getLinkObject') {
+    	var l = msg.message;
+     	var linkObj = {
+	    			"title": getNameFromLink(l.trim()),
+	    			"link": l.trim(),
+	    			"icon": getFavicon(l.trim()),
+	    			"label": false,
+	    			"type": "icon",
+	    			"children": null
+        		};
+    	safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnLinkObject',linkObj);
     }
 }
 
 renderLinks = function(){
-console.log("render links");
 	var links = localStorage.getItem('links');
 	if (links) {
-	console.log("loading localStorage");
-	console.log(links);
 		//Load saved links
 		links = JSON.parse(links);	
 	} else if ((safari.extension.settings.links) && (safari.extension.settings.links.length > 1)) {
 		//upgrades from old version of FaviconBar and converts to new format
-		console.log("old version upgrade links");
 	    links = safari.extension.settings.links.split(";").map(function(l){
 	    	if (l && l.length > 0){
 	    		return {
@@ -128,7 +121,6 @@ console.log("render links");
     	});
     	safari.extension.settings.links = null;
 	} else {
-		console.log("fresh install");
 		//New install of FaviconBar - default links
 		links = [
 			{
@@ -194,12 +186,12 @@ renderLinkHtml = function(l){
 	var retval = "";
 	if (l) {
 		if ((l.type == "icon") || (l.type == "folder")) {
-			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" data-type=\""+l.type+"\" data-children=\""+l.children+"\" src=\""+l.icon+"\">";
+			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" data-type=\""+l.type+"\" data-children=\""+l.children+"\" src=\""+l.icon+"\" />";
 			if (l.label) {
 				retval += "<label class='iconlabel'>"+l.title+"</label>";
 			}
 		} else if (l.type == "separator") {
-			retval = "<hr>";
+			retval = "<hr />";
 		}
 	}
 	return retval;
@@ -229,9 +221,7 @@ saveLinks = function(barObject) {
 		});		
 		}
 	});
-	
-    	console.log("setting links due to saveLinks");
-	
+		
 	localStorage.setItem('links', JSON.stringify(links));
 }
 
@@ -283,7 +273,6 @@ addLink = function(l,event){
     	    } else {
 			barData += renderLinkHtml(link);
 		}
-		console.log("renderBars called from addLink");
 		renderBars();
 	}
 }
@@ -303,14 +292,12 @@ addFolder = function(event){
     	    } else {
 			barData += renderLinkHtml(link);
 		}
-		console.log("renderBars called from addFolder");
 		renderBars();
 }
 
 addSeparator = function(target) {
 	$("<hr>").insertAfter(target);
     barData = $(target).parent().html();
-    console.log("renderBars called from addSeparator");
     renderBars();
 }
 
@@ -323,7 +310,6 @@ moveLink = function(event){
     	    $("#dragItem",event.target).remove().appendTo(event.target).removeAttr('id');
     	    barData = $(event.target).html();
 		}
-		console.log("renderBars called from moveLink");
 		renderBars();
 }
 
@@ -385,7 +371,6 @@ if ((event.target.nodeName == "IMG") && (event.dataTransfer.files.length > 0)) {
                      $(event.target).attr("src",e.target.result); 
                      var par = $(event.target).parent("#linkBar");
 					 barData = $(par).html();
-					 console.log("renderBars called from onBarDrop");
 					 renderBars();
                    }; 
                 })(file);
@@ -535,7 +520,6 @@ createMenu = function(event) {
 	
 
 	$(dd).unbind("change").change(function() {
-console.log("dd unbind change called");
 		switch(this.value) {
 			case "0":
 				break;

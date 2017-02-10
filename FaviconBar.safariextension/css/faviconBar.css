@@ -65,12 +65,19 @@ body.blend {
 	display: inline-block;
 	width: 1px;
 	height: 30px;
+	color: red;
 	border: solid 0px black;
-	background-color: RGBA(0, 0, 0, 0.15);
-	margin-left: 3px;
-	margin-right: 3px;
+	padding-left: 3px;
+	padding-right: 3px;
 	margin-top: 0px;
 	margin-bottom: 0px;
+}
+#linkBar hr:before {
+	display: inline-block;
+	border-left: solid 1px RGBA(0, 0, 0, 0.15);
+	content: ' ';
+	width: 0px;
+	height: 30px;
 }
 
 #linkBar.small img {
