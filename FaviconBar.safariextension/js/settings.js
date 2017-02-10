@@ -18,6 +18,13 @@ messageHandler = function(msg) {
 		if (targetIcon) {
 			$("p[data-icon='"+targetIcon+"']>img").click();
 		}
+	} else if (msg.name == 'returnLinkObject') {
+
+	    $('#linksContainer').append(renderLinkHtml(msg.message));	
+	    saveLinks();	
+		safari.self.tab.dispatchMessage('getLinks', true);
+		alert("Link added to the end of the list");
+
 	}
 }
 
@@ -52,9 +59,9 @@ renderLinkHtml = function(l){
 	if (l) {
 	if (l.type == "icon") {
 		if (l.label) { var checked = "checked" } else { var checked = "" }
-		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\" data-label=\""+l.label+"\"><img title='Click to choose image' class=\""+settings.iconSize+" "+settings.roundIcons+"\" src=\""+l.icon+"\"><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Delete' class='icondelete'>&#9587;</span><label class='iconlabel'><input type='checkbox' "+checked+"> Show text label</label></p>";
+		return 	"<p class='iconrow' data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-icon=\""+l.icon+"\" data-label=\""+l.label+"\"><img title='Click to choose image' class=\""+settings.iconSize+" "+settings.roundIcons+"\" src=\""+l.icon+"\" /><span title='Click to edit' class='icontitle'>"+l.title+"</span><span title='Click to edit' class='iconlink'>"+l.link+"</span><span title='Click to delete' class='icondelete'>&#9587;</span><label class='iconlabel'><input type='checkbox' "+checked+"> Show text label</label></p>";
 	} else if (l.type == "separator") {
-		return 	"<hr>";
+		return 	"<hr />";
 	}
 	} else {
 	return "";
@@ -136,6 +143,15 @@ finishBinds = function() {
 		$(this).parent().remove();
 		saveLinks();
 	}	
+	});
+	
+	$("#linksContainer hr").bind("click",function(event) {
+		if (($(window).width()-event.pageX) < 60) {
+				if (confirm("Delete this separator?")) {
+					$(this).remove();
+					saveLinks();
+				}	
+			}
 	});
 	
 	$("[type=checkbox]",".iconrow").change(function () {
@@ -234,8 +250,6 @@ $(document).ready(function(){
 	    	reader = new FileReader();
 		    reader.onload = function() {
 	        	var newvars = JSON.parse(this.result);
-	        	console.log(newvars);	
-	        	console.log(newvars.settings);
 				settings = newvars;
 				updateSettings();
 				var msg = {
@@ -299,6 +313,14 @@ $(document).ready(function(){
 		}
 		}
 
+	});
+	
+	$("#addlink").bind("click",function() {
+	
+		var l = prompt("Address for this link:\n");
+		if (l) {
+		safari.self.tab.dispatchMessage('getLinkObject',l);
+		}
 	});
 
 });

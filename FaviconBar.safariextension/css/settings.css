@@ -39,6 +39,39 @@ h3 {
 hr {
 	border: solid 0px;
 	border-top: solid 1px RGBA(0,0,0,0.1);
+	margin: 10px;
+}
+
+#linksContainer hr:after {
+	content: '╳';
+	transition: all 0.2s ease;
+	color: RGBA(0, 0, 0, 0.3);
+	background-color: RGB(255, 255, 255);
+	border-radius: 5px;
+	float: right;
+	font-size: 10px;
+	margin-top: -10px;
+	width: 11px;
+	padding: 3px;
+	text-align: left;
+	cursor: default;
+}
+
+#linksContainer hr:hover:after {
+	color: red;
+	background-color: RGB(244,244,244);
+}
+
+#linksContainer hr:before {
+	color: RGB(160, 160, 160);
+	position: absolute;
+	left: 48%;
+	margin-top: -8px;
+	content: "Separator";
+	font-size: 8pt;
+	background-color: #FFF;
+	padding-left: 4px;
+	padding-right: 4px;
 }
 
 .settingrow, .iconrow {
@@ -147,10 +180,10 @@ hr {
 	margin: 20px 0px 20px 20px;
 }
 .bottom {
-position: fixed;
-bottom: 15%;
-right: 15%;
-left: 15%;
+	position: fixed;
+	bottom: 15%;
+	right: 15%;
+	left: 15%;
 }
 .bottom > .header {
 	text-align: right;
@@ -162,19 +195,19 @@ left: 15%;
 	color: RGBA(0,0,0,0.5);
 }
 #btnsave, #btncancel {
-width: 70px;
-height: 21px;
-padding: 3px;
-margin: 3px;
+	width: 70px;
+	height: 21px;
+	padding: 3px;
+	margin: 3px;
 }
 #btnsave {
-background: linear-gradient(#6fb4f7, #1981fb);
-color: #ffffff;
-border-radius: 5px;
-border: solid 0px;
+	background: linear-gradient(#6fb4f7, #1981fb);
+	color: #ffffff;
+	border-radius: 5px;
+	border: solid 0px;
 }
 #btnsave:active {
-background: linear-gradient(#636363, #323232);
+	background: linear-gradient(#636363, #323232);
 }
 .editable {
 	color: #000;
@@ -220,6 +253,9 @@ background: linear-gradient(#636363, #323232);
 	background-size: 32px 32px;
 	background-repeat: no-repeat;
 	padding-left: 35px;
+}
+#addlink {
+	float: right;
 }
 
 .loader {

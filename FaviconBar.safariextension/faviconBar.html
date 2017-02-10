@@ -6,7 +6,9 @@
 		<script>
 			function init() {
 				if (safari.extension.globalPage.contentWindow) {
-					safari.extension.globalPage.contentWindow.renderBars();
+					if (safari.extension.globalPage.contentWindow.barData) {
+						safari.extension.globalPage.contentWindow.renderBars();
+					}
 				}
 			}
 		</script>

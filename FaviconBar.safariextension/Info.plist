@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Rory Combe</string>
 	<key>Builder Version</key>
-	<string>12602.4.8</string>
+	<string>12603.1.23.1</string>
 	<key>CFBundleDisplayName</key>
 	<string>Favicon Bar</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3</string>
+	<string>1.3.1</string>
 	<key>CFBundleVersion</key>
-	<string>022017</string>
+	<string>022017b</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Bars</key>
@@ -37,7 +37,7 @@
 	<key>Description</key>
 	<string>A favicon based favourites bar</string>
 	<key>DeveloperIdentifier</key>
-	<string>FHBT333DVL</string>
+	<string>W4CTZ3E3F7</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>

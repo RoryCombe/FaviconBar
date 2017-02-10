@@ -2,7 +2,6 @@ var barData = false;
 
 $(document).ready(function() {
 	safari.application.addEventListener("message", messageHandler, false);
-	safari.application.addEventListener("open", openHandler, true);
 	barData = renderLinks();
 	renderBars();
 });
@@ -29,15 +28,6 @@ renderBars = function() {
 			saveLinks($("#linkBar",safari.extension.bars[0].contentWindow.document));
 		}
 	}
-}
-
-openHandler = function(event) {
-    if (event.target instanceof SafariBrowserWindow) {
-    	//ugly hack for new window because I can't access the extension bar until after it loads faviconBar.html
-    	//right now added code back into faviconBar.html to init on new window to fix tab dragging bug, so this is redundant
-		//this commenting out, will remove in the future if a better solution doesn't present itself.
-		//setTimeout(renderBars,500);
-    }
 }
 
 initBar = function(bar) {
@@ -96,6 +86,17 @@ messageHandler = function(msg) {
     	renderBars();
     } else if (msg.name == 'getLinks') {
     	safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnLinks',localStorage.getItem('links'));
+    } else if (msg.name == 'getLinkObject') {
+    	var l = msg.message;
+     	var linkObj = {
+	    			"title": getNameFromLink(l.trim()),
+	    			"link": l.trim(),
+	    			"icon": getFavicon(l.trim()),
+	    			"label": false,
+	    			"type": "icon",
+	    			"children": null
+        		};
+    	safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('returnLinkObject',linkObj);
     }
 }
 
@@ -104,7 +105,7 @@ renderLinks = function(){
 	if (links) {
 		//Load saved links
 		links = JSON.parse(links);	
-	} else if (safari.extension.settings.links) {
+	} else if ((safari.extension.settings.links) && (safari.extension.settings.links.length > 1)) {
 		//upgrades from old version of FaviconBar and converts to new format
 	    links = safari.extension.settings.links.split(";").map(function(l){
 	    	if (l && l.length > 0){
@@ -185,12 +186,12 @@ renderLinkHtml = function(l){
 	var retval = "";
 	if (l) {
 		if ((l.type == "icon") || (l.type == "folder")) {
-			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" data-type=\""+l.type+"\" data-children=\""+l.children+"\" src=\""+l.icon+"\">";
+			retval = "<img data-title=\""+l.title+"\" data-url=\""+l.link+"\" data-label=\""+l.label+"\" data-icon=\""+l.icon+"\" data-type=\""+l.type+"\" data-children=\""+l.children+"\" src=\""+l.icon+"\" />";
 			if (l.label) {
 				retval += "<label class='iconlabel'>"+l.title+"</label>";
 			}
 		} else if (l.type == "separator") {
-			retval = "<hr>";
+			retval = "<hr />";
 		}
 	}
 	return retval;
@@ -220,7 +221,7 @@ saveLinks = function(barObject) {
 		});		
 		}
 	});
-	
+		
 	localStorage.setItem('links', JSON.stringify(links));
 }
 
@@ -519,7 +520,6 @@ createMenu = function(event) {
 	
 
 	$(dd).unbind("change").change(function() {
-
 		switch(this.value) {
 			case "0":
 				break;
