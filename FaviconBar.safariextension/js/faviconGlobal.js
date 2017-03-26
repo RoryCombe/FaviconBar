@@ -531,14 +531,14 @@ createMenu = function(event) {
 				break;
 			case "4":
 				newtitle = prompt("Title for this link:\n",$(target).data("title"));
-				if (newtitle) { $(target).data("title", newtitle);
+				if (newtitle) { $(target).attr("data-title", newtitle);
 				barData = $(target).parent("#linkBar").html();
 				renderBars();
 				}
 				break;
 			case "5":
 				newtitle = prompt("Address for this link:\n",$(target).data("url"));
-				if (newtitle) { $(target).data("url", newtitle);
+				if (newtitle) { $(target).attr("data-url", newtitle);
 				barData = $(target).parent("#linkBar").html();
 				renderBars();
 				}
