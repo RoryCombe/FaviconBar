@@ -3,14 +3,14 @@ A favicon based favourites bar for Safari
 
 ![](img/faviconbar.gif)
 
-##Installation
+## Installation
 
 * Download the installation file: [FaviconBar.safariextz](https://github.com/RoryCombe/FaviconBar/raw/master/FaviconBar.safariextz)
 * Double-click the downloaded file and select "Install"
 
 ![](img/install.png)
 
-##Features
+## Features
 
 * Drag & Drop
 	- To add icons to the bar, simply drag a link from a web page or from the address bar
@@ -27,7 +27,7 @@ A favicon based favourites bar for Safari
 
 * Open links in the current tab, new tab, or new window with hotkeys and the quick menu
 
-##Customization
+## Customization
 
 Some of the advanced features of FaviconBar
 
@@ -48,12 +48,12 @@ Some of the advanced features of FaviconBar
 
 ![](img/screenshot6.png)
 
-##Contributing
+## Contributing
 Contributions are always appreciated. If you're interested please submit a pull request, or reach out on Twitter:
 
 Dan [@nevon](https://twitter.com/nevon)
 
 Rory [@rorycombe](https://twitter.com/rorycombe)
 
-##Support or feature requests
+## Support or feature requests
 Please [create an issue](https://github.com/RoryCombe/FaviconBar/issues)
